@@ -29,6 +29,11 @@ void log_score (long int score, int level) /* wingame is TRUE if the whole game 
   if (level == LAST_LEVEL+1)
     {
       fp = fopen (GLIDER_WINFILE, "a");
+      if (fp == NULL)
+	{
+	  fprintf (stderr, "Could not open win file for appending!\n");
+	  exit (1);
+	}
       fprintf (fp, "User %8s finished Glider v%5s with score %8ld on %s\n", user_info.pw_name, GLIDER_VERSION, score, time_string);
       fclose (fp);
     }
@@ -39,6 +44,11 @@ void log_score (long int score, int level) /* wingame is TRUE if the whole game 
     game_status = 'D'; 
 
   fp = fopen (GLIDER_SCOREFILE, "a");
+  if (fp == NULL)
+    {
+      fprintf (stderr, "Could not open score file for appending!\n");
+      exit (1);
+    }
   fprintf (fp, "Version = %5s User = %8s   Score = %8ld   Level = %2d %c   Time = %s\n", GLIDER_VERSION, user_info.pw_name, score, level, game_status, time_string);
   fclose (fp);
 }
@@ -67,9 +77,14 @@ void log_usage (void)
 
   /* Get the users ID number and their username */
   user_info = *getpwuid (getuid ());
-
+  
   fp = fopen (GLIDER_LOGFILE, "a");
-
+  if (fp == NULL)
+    {
+      fprintf (stderr, "Cannot open log file for appending\n");
+      exit (1);
+    }
+  
   fprintf (fp, "User %8s started Glider v%5s on %s\n", user_info.pw_name, GLIDER_VERSION, time_string); /***** CORE DUMP *****/
   fclose (fp);
 }
@@ -83,6 +98,11 @@ char *get_exec_name (int pid)
 
   sprintf (filename, "/proc/%d/cmdline", pid);
   fp = fopen (filename, "r");
+  if (fp == NULL)
+    {
+      fprintf (stderr, "Could not open up /proc to get the command line arguments\n");
+      exit (1);
+    }
   fgets (command_line, GLIDER_PATHLENGTH-1, fp);
   return (command_line);
 }
@@ -132,6 +152,11 @@ int get_ppid (int pid)
 
   sprintf (filename, "/proc/%d/stat", pid);
   fp = fopen (filename, "r");
+  if (fp == NULL)
+    {
+      fprintf (stderr, "Could not open /proc to get the stat information\n");
+      exit (1);
+    }
   fscanf (fp, "%s", data);
 
   ptr = data;
@@ -156,6 +181,11 @@ char *get_exec (int pid)
 
   sprintf (filename, "/proc/%d/stat", pid);
   fp = fopen (filename, "r");
+  if (fp == NULL)
+    {
+      fprintf (stderr, "Could not open /proc to get the stat information\n");
+      exit (1);
+    }
   fscanf (fp, "%s", data);
   ptr = data;
 
@@ -193,9 +223,14 @@ void sort_scores (void)
   FILE *fp;
   struct _score_data current_data;
   char bit_bucket [100];
-
+  
   fp = fopen (GLIDER_SCOREFILE, "r");
-
+  if (fp == NULL)
+    {
+      fprintf (stderr, "Could not open score file for reading\n");
+      exit (1);
+    }
+  
   while (!feof (fp))
     {
       fscanf (fp, "Version = %s", current_data.version);

@@ -26,9 +26,9 @@
 #endif
 
 #ifdef LINUX
-#define GLIDER_SCOREFILE "/home/waynep/.gdata/glider.scores"
-#define GLIDER_LOGFILE "/home/waynep/.gdata/glider.log"
-#define GLIDER_WINFILE "/home/waynep/.gdata/glider.winners"
+#define GLIDER_SCOREFILE "glider.scores"
+#define GLIDER_LOGFILE   "glider.log"
+#define GLIDER_WINFILE   "glider.winners"
 #endif
 
 #define GLIDER_PATHLENGTH 100
@@ -53,7 +53,7 @@
 
 #define WAIT_FOR_UPDATE 2
 
-#define START_LEVEL 10
+#define START_LEVEL 1
 #define DIR_FORWARD 1
 #define DIR_BACKWARD -1
 #define STEP_DOWN 0.25
