@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -448,14 +449,14 @@ void menu (void)
 
 #define PRINT (printf ("Line: %d\n", __LINE__), fflush (stdout))
 
-void signal_handler (void)
+void signal_handler (int signum)
 {
-  printf ("Signal handler... Exiting...");
+  printf ("Signal handler %d ... Exiting...", signum);
   exit (1);
 }
 
 
-void main ()
+int main (void)
 {
   char version_string [80];
 
@@ -492,4 +493,6 @@ void main ()
   ansi_Position (1, 1);
   ansi_ClearScreen ();
   set_term_default ();
+
+  return (0); /* Exit cleanly */
 }
