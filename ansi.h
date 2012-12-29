@@ -69,7 +69,7 @@
 #define CHAR_equals '='
 #define CHAR_asterisk '*'
 
-#define centre_text(text, y, screen_width) ansi_PutString ((screen_width - strlen (text)) / 2, y, text)
+#define centre_text(text, y, screen_width) ansi_PutString ((int)(screen_width - strlen (text)) / 2, y, text)
 #define draw_box_WH(x, y, width, height, Horizontal, Vertical, Corner) draw_box_XY (x, y, x+width-1, y+height-1, Horizontal, Vertical, Corner)
 #define fill_area_WH(x, y, width, height, fill) fill_area_XY (x, y, x+width-1, y+height-1, fill)
 #define draw_line_WH(x, y, width, height) draw_line_XY (x, y, x+width-1, y+height-1)
