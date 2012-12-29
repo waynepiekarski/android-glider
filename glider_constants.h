@@ -17,7 +17,7 @@
 #define GLIDER_SCOREFILE "/home/athena/student/9506012x/.gdata/glider.scores"
 #define GLIDER_LOGFILE "/home/athena/student/9506012x/.gdata/glider.log"
 #define GLIDER_WINFILE "/home/athena/student/9506012x/.gdata/glider.winners"
-#endif ATHENA
+#endif
 
 #ifdef TOASTER
 #define GLIDER_SCOREFILE "/home/admin/9605217d/glider/glider.scores"
