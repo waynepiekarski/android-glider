@@ -1,4 +1,5 @@
 #include "glider_stats.h"
+#include <time.h>
 
 void log_score (long int score, int level) /* wingame is TRUE if the whole game was beaten */
 {
