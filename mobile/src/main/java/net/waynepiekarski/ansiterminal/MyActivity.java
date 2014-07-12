@@ -4,6 +4,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 public class MyActivity extends ActionBarActivity {
@@ -12,8 +14,10 @@ public class MyActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-    }
 
+        // Grab the layout object to embed later things in code
+        RelativeLayout rel = (RelativeLayout)findViewById(R.id.top_layout);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
