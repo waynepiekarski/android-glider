@@ -2,6 +2,7 @@ package net.waynepiekarski.ansiterminal;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -17,7 +18,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public SurfaceHolder mSurfaceHolder;
         public Context mContext;
         public boolean mRunning = true;
-        public Paint mPaintBounds;
         public Paint mPaintText;
         public int mCanvasWidth;
         public int mCanvasHeight;
@@ -29,6 +29,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public static final int mCharSpacing = 1;
         public static final int mTerminalWidth = 80;
         public static final int mTerminalHeight = 25;
+        public static final int mPaintColor = Color.GREEN;
+        public static final int mBackgroundColor = Color.BLACK;
 
         public RenderThread (SurfaceHolder holder, Context context) {
             mSurfaceHolder = holder;
@@ -36,10 +38,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
             mPaintText = new Paint();
             mPaintText.setTypeface(Typeface.create("Monospace", Typeface.BOLD));
-            mPaintText.setARGB(0xFF, 0x0, 0x0, 0xFF);
-
-            mPaintBounds = new Paint();
-            mPaintBounds.setARGB(0xFF, 0x0, 0xFF, 0x00);
+            mPaintText.setColor(mPaintColor);
 
             mCanvasDirty = true;
         }
@@ -114,10 +113,10 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             }
 
             // Logging.debug("onDraw temp=" + tempX);
-            canvas.drawRGB(0xC0, 0xC0, 0xC0); // Gray terminal background
+            canvas.drawColor(mBackgroundColor);
 
             // Debug the full layout of the display
-            drawDebug(canvas, 80, 25);
+            drawDebug(canvas, mTerminalWidth, mTerminalHeight);
 
             // Animated string to show things are updating
             drawFixedString(canvas, "R="+tempR+"C="+tempC, tempR, tempC);
