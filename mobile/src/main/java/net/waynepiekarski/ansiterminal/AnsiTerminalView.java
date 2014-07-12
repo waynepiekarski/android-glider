@@ -3,6 +3,7 @@ package net.waynepiekarski.ansiterminal;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -16,27 +17,59 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public SurfaceHolder mSurfaceHolder;
         public Context mContext;
         public boolean mRunning = true;
-        public Paint mPaint;
+        public Paint mPaintBounds;
+        public Paint mPaintText;
         public int mCanvasWidth;
         public int mCanvasHeight;
+        public int mCharWidth;
+        public int mCharHeight;
+        public static final int mCharSpacing = 1;
 
         public RenderThread (SurfaceHolder holder, Context context) {
             mSurfaceHolder = holder;
             mContext = context;
-            mPaint = new Paint();
-            mPaint.setTypeface(Typeface.create("Helvetica", Typeface.BOLD));
-            mPaint.setTextSize(50);
-            mPaint.setARGB(0xFF, 0x0, 0x0, 0xFF);
+
+            mPaintText = new Paint();
+            mPaintText.setTypeface(Typeface.create("Monospace", Typeface.BOLD));
+            mPaintText.setTextSize(50);
+            mPaintText.setARGB(0xFF, 0x0, 0x0, 0xFF);
+            Rect rect = new Rect();
+            mPaintText.getTextBounds("X", 0, 1, rect);
+            mCharWidth = rect.width() + mCharSpacing;
+            mCharHeight = rect.height() + mCharSpacing;
+            Logging.debug("Calculated bounds width=" + mCharWidth + " height=" + mCharHeight);
+
+            mPaintBounds = new Paint();
+            mPaintBounds.setARGB(0xFF, 0x0, 0xFF, 0x00);
+        }
+
+        public void drawFixedChar (Canvas canvas, char ch, int row, int col) {
+            int x = col * mCharWidth;
+            int y = (row+1) * mCharHeight;
+            canvas.drawText(String.valueOf(ch), x, y, mPaintText);
+        }
+
+        public void drawFixedString(Canvas canvas, String str, int row, int col) {
+            int c = col;
+            for (char ch : str.toCharArray()) {
+                drawFixedChar(canvas, ch, row, c);
+                c++;
+            }
         }
 
         int tempX = 0;
         public void doDraw(Canvas canvas) {
-            Logging.debug("onDraw temp=" + tempX);
+            // Logging.debug("onDraw temp=" + tempX);
             canvas.drawRGB(0xC0, 0xC0, 0xC0); // Gray terminal background
-            canvas.drawText("Hello world " + tempX, tempX, tempX, mPaint);
+            canvas.drawText("Hello world " + tempX, tempX, tempX, mPaintText);
             tempX += 5;
             if (tempX >= 500)
                 tempX = 0;
+            drawFixedString(canvas, "123abcXYZ", 0, 0);
+            drawFixedString(canvas, "ABC123***", 1, 0);
+            for (int r = 0; r < 10; r++) {
+                drawFixedString(canvas, "ROW" + r, r, 10);
+            }
         }
 
         public void run() {
