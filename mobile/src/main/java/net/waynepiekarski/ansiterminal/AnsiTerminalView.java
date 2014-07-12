@@ -57,19 +57,33 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             }
         }
 
-        int tempX = 0;
+        public void drawDebug(Canvas canvas, int width, int height) {
+            for (int c = 0; c < width; c++) {
+                for (int r = 0; r < height; r++) {
+                    if ((c == 0) || (c == width-1) || (r == 0) || (r == height-1))
+                        drawFixedChar(canvas, '#', r, c);
+                    else {
+                        drawFixedChar(canvas, Character.forDigit(c % 10, 10), r, c);
+                    }
+                }
+            }
+        }
+
+        int tempR = 0;
+        int tempC = 0;
         public void doDraw(Canvas canvas) {
             // Logging.debug("onDraw temp=" + tempX);
             canvas.drawRGB(0xC0, 0xC0, 0xC0); // Gray terminal background
-            canvas.drawText("Hello world " + tempX, tempX, tempX, mPaintText);
-            tempX += 5;
-            if (tempX >= 500)
-                tempX = 0;
-            drawFixedString(canvas, "123abcXYZ", 0, 0);
-            drawFixedString(canvas, "ABC123***", 1, 0);
-            for (int r = 0; r < 10; r++) {
-                drawFixedString(canvas, "ROW" + r, r, 10);
-            }
+
+            // Debug the full layout of the display
+            drawDebug(canvas, 80, 25);
+
+            // Animated string to show things are updating
+            drawFixedString(canvas, "R="+tempR+"C="+tempC, tempR, tempC);
+            tempR += 1;
+            if (tempR >= 25) tempR = 0;
+            tempC += 1;
+            if (tempC >= 80) tempC = 0;
         }
 
         public void run() {
