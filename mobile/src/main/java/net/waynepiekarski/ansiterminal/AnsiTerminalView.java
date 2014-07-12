@@ -148,6 +148,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 // Change bitmap attributes atomically
                 mCanvasWidth = width;
                 mCanvasHeight = height;
+                mCanvasDirty = true;
+                Logging.debug("Detected change in surface size to " + width + "x" + height);
             }
         }
     }
