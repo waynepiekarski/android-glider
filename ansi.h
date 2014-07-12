@@ -18,10 +18,10 @@
 
 /* Attribute definitions */
 #define ATTR_normal 0
-#define ATTR_bold 1
-#define ATTR_bright 1
-#define ATTR_underscore 4
-#define ATTR_blink 5
+// #define ATTR_bold 1
+// #define ATTR_bright 1
+// #define ATTR_underscore 4
+// #define ATTR_blink 5
 #define ATTR_reverse 7
 
 
@@ -40,12 +40,9 @@
 #define ansi_Position(X, Y) printf ("\033[%d;%dH", Y, X)
 #define ansi_PutChar(X, Y, Char) printf ("\033[%d;%dH%c", Y, X, Char)
 #define ansi_PutString(X, Y, String) printf ("\033[%d;%dH%s", Y, X, String)
-#define ansi_MoveCursor(Displacement, Direction) printf ("\033[%d%c", Displacement, Direction)
 #define ansi_ClearScreen() printf ("\033[2J")
-#define ansi_ClearLine() printf ("\033[0K")
 
 #define ansi_DefaultAttr() printf ("\033[0m")
-#define ansi_DefaultColor() printf ("\033[0;37;40m")
 #define ansi_SetAttr(Mode) printf ("\033[%dm", Mode)
 #define ansi_SetFG(FG) printf ("\033[3%dm", FG)
 #define ansi_SetBG(BG) printf ("\033[4%dm", BG)
