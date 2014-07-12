@@ -19,6 +19,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public Context mContext;
         public boolean mRunning = true;
         public Paint mPaintText;
+        public Paint mPaintBackground;
         public int mCanvasWidth;
         public int mCanvasHeight;
         public boolean mCanvasDirty;
@@ -39,6 +40,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             mPaintText = new Paint();
             mPaintText.setTypeface(Typeface.create("Monospace", Typeface.BOLD));
             mPaintText.setColor(mPaintColor);
+
+            mPaintBackground = new Paint();
+            mPaintBackground.setColor(mBackgroundColor);
 
             mCanvasDirty = true;
         }
@@ -76,6 +80,20 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 }
                 fontSize++;
             }
+        }
+
+        public void clearFixedChar(Canvas canvas, int row, int col) {
+            int x = mCharWidthOffset + col * mCharWidth;
+            int y = mCharHeightOffset + (row+1) * mCharHeight;
+            canvas.drawRect(x, y - mCharHeight, x + mCharWidth, y, mPaintBackground);
+        }
+
+        public void clearFixedString(Canvas canvas, String str, int row, int col, int border) {
+            int clen = border*2 + str.length();
+            int rlen = border*2 + 1;
+            for (int c = 0; c < clen; c++)
+                for (int r = 0; r < rlen; r++)
+                    clearFixedChar(canvas, row+r-border, col+c-border);
         }
 
         public void drawFixedChar (Canvas canvas, char ch, int row, int col) {
@@ -117,9 +135,14 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
             // Debug the full layout of the display
             drawDebug(canvas, mTerminalWidth, mTerminalHeight);
+            clearFixedChar(canvas, 1, 0);
+            clearFixedChar(canvas, 0, 1);
+            clearFixedChar(canvas, mTerminalHeight-1, mTerminalWidth-2);
+            clearFixedChar(canvas, mTerminalHeight-2, mTerminalWidth-1);
 
             // Animated string to show things are updating
-            drawFixedString(canvas, "R="+tempR+"C="+tempC, tempR, tempC);
+            clearFixedString(canvas, "R="+tempR+",C="+tempC, tempR, tempC, 1);
+            drawFixedString(canvas, "R="+tempR+",C="+tempC, tempR, tempC);
             tempR += 1;
             if (tempR >= 25) tempR = 0;
             tempC += 1;
