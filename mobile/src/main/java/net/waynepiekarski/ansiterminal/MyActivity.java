@@ -17,6 +17,9 @@ public class MyActivity extends ActionBarActivity {
 
         // Grab the layout object to embed later things in code
         RelativeLayout rel = (RelativeLayout)findViewById(R.id.top_layout);
+
+        AnsiTerminalView ansi = new AnsiTerminalView(this);
+        rel.addView(ansi);
     }
 
     @Override
