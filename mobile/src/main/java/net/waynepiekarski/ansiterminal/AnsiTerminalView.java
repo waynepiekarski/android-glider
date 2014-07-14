@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -445,7 +446,10 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 current = buffer.getByte();
             }
         }
+
+        public int getCanvasWidth() { return mCanvasWidth; }
     }
+
 
     public AnsiTerminalView (Context context) {
         super(context);
@@ -496,18 +500,50 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         mRenderThread.submitAnsiBuffer(len, buffer);
     }
 
+    // Single element queue to store the last character in the virtual keyboard
+    private LinkedBlockingQueue<Byte> keyBuffer = new LinkedBlockingQueue<Byte>();
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // This is a touch event, so lets decide what to do with it
+            int width = mRenderThread.getCanvasWidth() / 2;
+            byte result = 0;
+            if (ev.getX() < width)
+                result = '<';
+            else if (ev.getX() >= width)
+                result = '>';
+            Logging.debug ("Generating keystroke '" + String.valueOf((char)(result & 0xFF)) + "' from " + ev.toString());
+            keyBuffer.clear();
+            try {
+                keyBuffer.put(result);
+            } catch (InterruptedException e) {
+                Logging.fatal ("Failed to store keystroke from " + e);
+            }
+        }
+        return true; // We processed this event
+    }
+
     public byte waitForKeypress() {
         // Native code will call this to block for a key press
-        // TODO: Implement keypress code based on touch events
-        Logging.debug("Returning 'x' keypress");
-        return 'x';
+        byte b = 0;
+        try {
+            b = keyBuffer.take().byteValue();
+        } catch (InterruptedException e) {
+            Logging.fatal ("Failed to read keystroke from " + e);
+        }
+        Logging.debug("Unblocking from character " + b);
+        return b;
     }
 
     public byte checkForKeypress() {
         // Native code will call this to read a key but do not block if none available
-        // TODO: Implement keypress code based on touch events
-        Logging.debug("Returning 'x' keypress");
-        return 'x';
+        byte b = 0;
+        Byte result = keyBuffer.poll();
+        if (result != null)
+            b = result.byteValue();
+        Logging.debug("Polled with character " + b);
+        return b;
     }
 
     // This will be called within a new thread and can make calls to the three methods above
