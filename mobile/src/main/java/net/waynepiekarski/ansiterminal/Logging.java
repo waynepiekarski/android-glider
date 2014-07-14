@@ -11,8 +11,11 @@ public class Logging {
     }
 
     public static void fatal (String str) {
-        Log.e (TAG, str);
-        throw new RuntimeException(str);
+        Log.e (TAG, "FATAL ERROR: " + str);
+        RuntimeException re = new RuntimeException();
+        re.printStackTrace();
+        Log.e (TAG, "Exiting with error code 1");
+        System.exit(1);
     }
 
 }
