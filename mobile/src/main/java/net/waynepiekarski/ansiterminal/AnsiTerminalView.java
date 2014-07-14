@@ -108,7 +108,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             int rlen = border*2 + 1;
             for (int c = 0; c < clen; c++)
                 for (int r = 0; r < rlen; r++)
-                    if ((col+c-border >= 0) && (col+c-border < mTerminalWidth) && (row+r-border >= 0) && (row+r-border <= mTerminalHeight))
+                    // Make sure we never generate a negative coordinate, but overflow is good
+                    if ((col+c-border >= 0) && (row+r-border >= 0))
                         result.append(AnsiString.putChar(row+r-border, col+c-border, ' '));
             return result;
         }
@@ -206,7 +207,13 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             ansiTest.append(AnsiString.setForeground(AnsiString.YELLOW));
             ansiTest.append(AnsiString.putString(10, 20, "Yellow text at row 10, col 20"));
 
-            // Animated string to show things are updating
+            ansiTest.append(AnsiString.setBackground(AnsiString.GREEN));
+            ansiTest.append(AnsiString.setForeground(AnsiString.RED));
+            ansiTest.append(ansiClearFixedString("Clear box should not wrap-around", 10, 75, 1));
+            ansiTest.append(AnsiString.putString(10, 75, "Clear box should not wrap-around"));
+
+            // Animated text with clear box to show things are updating
+            ansiTest.append(AnsiString.defaultAttr());
             ansiTest.append(ansiClearFixedString("R=" + tempR + ",C=" + tempC, tempR, tempC, 1));
             ansiTest.append(AnsiString.putString(tempR, tempC, "R="+tempR+",C="+tempC));
             tempR += 1;
@@ -215,7 +222,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             if (tempC >= 80) tempC = 0;
 
             // Now parse the ANSI buffer and render it
-            Logging.debug("tempR=" + tempR + " tempC=" + tempC);
             drawAnsiBuffer(canvas, ansiTest.toString());
         }
 
