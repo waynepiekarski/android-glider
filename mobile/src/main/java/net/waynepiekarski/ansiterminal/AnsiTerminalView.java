@@ -1,6 +1,7 @@
 package net.waynepiekarski.ansiterminal;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +24,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public SurfaceHolder mSurfaceHolder;
         public Context mContext;
         public boolean mRunning = true;
+        public Canvas mCanvas;
+        public Bitmap mBitmap;
         public Paint mPaintText;
         public Paint mPaintBackground;
         public int mCanvasWidth;
@@ -260,11 +263,15 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     byte[] buffer = ansiBuffer.take();
                     Logging.debug ("Rendering new ANSI buffer of length " + buffer.length);
 
+                    // Do the drawing to our local bitmap
+                    doDraw(mCanvas, buffer);
+                    // doDrawDebug(mCanvas);
+
                     // Lock the canvas and render the buffer to the display
                     c = mSurfaceHolder.lockCanvas(null);
                     synchronized (mSurfaceHolder) {
-                        doDraw(c, buffer);
-                        // doDrawDebug(c);
+                        // Copy our local bitmap to the surface canvas provided
+                        c.drawBitmap(mBitmap, 0, 0, null);
                     }
                 } catch (InterruptedException e) {
                     Logging.fatal("ansiBuffer.take() failed with InterruptedException " + e);
@@ -282,6 +289,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 mCanvasWidth = width;
                 mCanvasHeight = height;
                 mCanvasDirty = true;
+                mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                mCanvas = new Canvas (mBitmap);
                 Logging.debug("Detected change in surface size to " + width + "x" + height);
             }
         }
