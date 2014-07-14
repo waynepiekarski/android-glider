@@ -11,6 +11,8 @@ import android.view.SurfaceView;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -38,6 +40,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public int mCursorRow = 0;
         public int mCursorCol = 0;
         public boolean mCursorReverse = false;
+        private LinkedBlockingQueue<byte[]> ansiBuffer = new LinkedBlockingQueue<byte[]>();
 
         public RenderThread (SurfaceHolder holder, Context context) {
             mSurfaceHolder = holder;
@@ -51,6 +54,18 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             mPaintBackground.setColor(mDefaultBackground);
 
             mCanvasDirty = true;
+        }
+
+        public void submitAnsiBuffer(int len, byte[] buffer) {
+            try {
+                if (len == 0) Logging.fatal("Empty buffer found");
+                // Make a copy because the native code will reuse the buffer
+                byte[] copy = Arrays.copyOfRange(buffer, 0, len);
+                Logging.debug("Storing ANSI buffer with " + copy.length + " to the processing queue");
+                ansiBuffer.put(copy);
+            } catch (InterruptedException e) {
+                Logging.fatal("Failed to put into ANSI buffer with InterruptedException " + e);
+            }
         }
 
         // Given the current canvas dimensions, find the font size which fills up the screen
@@ -82,6 +97,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     // Compute any remaining padding to center the image on the display
                     mCharWidthOffset = (mCanvasWidth - mCharWidth*terminalWidth) / 2;
                     mCharHeightOffset = (mCanvasHeight - mCharHeight*terminalHeight) / 2;
+                    Logging.debug("Offset is (" + mCharWidthOffset + "," + mCharHeightOffset + ") from terminal " + terminalWidth + "x" + terminalHeight + ", canvas " + mCanvasWidth + "x" + mCanvasHeight + " and char " + mCharWidth + "x" + mCharHeight);
                     return;
                 }
                 fontSize++;
@@ -123,7 +139,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public void drawFixedChar (Canvas canvas, byte b, int row, int col) {
             int x = mCharWidthOffset + col * mCharWidth;
             int y = mCharHeightOffset + (row+1) * mCharHeight;
-            canvas.drawText(String.valueOf((char)(b & 0xFF)), x, y, mPaintText);
+            canvas.drawText(String.valueOf((char) (b & 0xFF)), x, y, mPaintText);
+            // Logging.debug ("Drawing " + String.valueOf((char)(b&0xFF)) + " at RC" + row + "," + col + " at XY" + x + "," + y + " with OFS" + mCharWidthOffset + "," + mCharHeightOffset);
         }
 
         public void drawFixedString(Canvas canvas, String str, int row, int col) {
@@ -164,9 +181,18 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             canvas.drawColor(mDefaultBackground);
         }
 
+        public void doDraw(Canvas canvas, byte[] buffer) {
+            if (mCanvasDirty) {
+                mCanvasDirty = false;
+                recalculateFontSize(canvas, mTerminalWidth, mTerminalHeight);
+            }
+            Logging.debug("Received ANSI buffer with " + buffer.length + " bytes from native code");
+            drawAnsiBuffer(canvas, buffer);
+        }
+
         int tempR = 0;
         int tempC = 0;
-        public void doDraw(Canvas canvas) {
+        public void doDrawDebug(Canvas canvas) {
             if (mCanvasDirty) {
                 mCanvasDirty = false;
                 recalculateFontSize(canvas, mTerminalWidth, mTerminalHeight);
@@ -229,10 +255,19 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             while (mRunning) {
                 Canvas c = null;
                 try {
+                    // Block until ANSI commands are available, and then render them
+                    Logging.debug ("Waiting for new ANSI buffer, sleeping ...");
+                    byte[] buffer = ansiBuffer.take();
+                    Logging.debug ("Rendering new ANSI buffer of length " + buffer.length);
+
+                    // Lock the canvas and render the buffer to the display
                     c = mSurfaceHolder.lockCanvas(null);
                     synchronized (mSurfaceHolder) {
-                        doDraw(c);
+                        doDraw(c, buffer);
+                        // doDrawDebug(c);
                     }
+                } catch (InterruptedException e) {
+                    Logging.fatal("ansiBuffer.take() failed with InterruptedException " + e);
                 } finally {
                     if (c != null) {
                         mSurfaceHolder.unlockCanvasAndPost(c);
@@ -412,7 +447,19 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
         // Drawing is done on a separate thread, so create it here but wait until surfaceCreated()
         // before we actually start the drawing
+        Logging.debug("Starting thread for RenderThread");
         mRenderThread = new RenderThread(holder, context);
+
+        // Create thread to run our native code implementation
+        Logging.debug ("Starting thread for nativeAnsiCode");
+        Thread nativeThread = new Thread(new Runnable() {
+            public void run() {
+                Logging.debug("Calling into JNI nativeAnsiCode()");
+                nativeAnsiCode();
+                Logging.fatal("nativeAnsiCode() has returned unexpectedly");
+            }
+        });
+        nativeThread.start();
 
         // Get key events
         setFocusable(true);
@@ -433,5 +480,31 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         Logging.debug("surfaceDestroyed");
         Logging.fatal("surfaceDestroyed not implemented yet");
         // TODO: Stop the rendering thread
+    }
+
+    public void submitAnsiBuffer(int len, byte[] buffer) {
+        // Native code will call this to submit a new buffer for processing in the queue
+        mRenderThread.submitAnsiBuffer(len, buffer);
+    }
+
+    public byte waitForKeypress() {
+        // Native code will call this to block for a key press
+        // TODO: Implement keypress code based on touch events
+        Logging.debug("Returning 'x' keypress");
+        return 'x';
+    }
+
+    public byte checkForKeypress() {
+        // Native code will call this to read a key but do not block if none available
+        // TODO: Implement keypress code based on touch events
+        Logging.debug("Returning 'x' keypress");
+        return 'x';
+    }
+
+    // This will be called within a new thread and can make calls to the three methods above
+    public native void nativeAnsiCode();
+
+    static {
+        System.loadLibrary("native-jni");
     }
 }
