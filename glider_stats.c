@@ -91,24 +91,6 @@ void log_usage (void)
 }
 
 
-char *get_exec_name (int pid)
-{
-  char filename [GLIDER_PATHLENGTH];
-  static char command_line [80];
-  FILE *fp;
-
-  sprintf (filename, "/proc/%d/cmdline", pid);
-  fp = fopen (filename, "r");
-  if (fp == NULL)
-    {
-      fprintf (stderr, "Could not open up /proc to get the command line arguments\n");
-      exit (1);
-    }
-  fgets (command_line, GLIDER_PATHLENGTH-1, fp);
-  return (command_line);
-}
-
-
 char *get_username_from_uid (int uid)
 {
   struct passwd user_info;
