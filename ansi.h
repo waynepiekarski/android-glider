@@ -47,7 +47,6 @@
 #define ansi_SetFG(FG) printf ("\033[3%dm", FG)
 #define ansi_SetBG(BG) printf ("\033[4%dm", BG)
 #define ansi_SetColor(Attr, FG, BG) printf ("\033[%dm\033[3%dm\033[4%dm", Attr, FG, BG)
-#define ansi_Reset() printf ("\033[8");
 
 #define CHAR_plus '+'
 #define CHAR_endpoint '+'
