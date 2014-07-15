@@ -202,7 +202,7 @@ int play_level (int level, long int *score, int lives, int total_score)
 	  {
 	  case DIR_left: direction = DIR_BACKWARD; break;
 	  case DIR_right: direction = DIR_FORWARD; break;
-	  default: KeyPressed = getchar (); break;
+	  default: KeyPressed = terminal_getchar (); break;
 	  }
       
       aircraft_stats = check_aircraft (aircraft_x, aircraft_y, level, aircraft);
@@ -395,7 +395,7 @@ int menu_get_input (void)
 	    option++;
 	  break;
 	case DIR_unknown:
-	  KeyPressed = getchar ();
+	  KeyPressed = terminal_getchar ();
 
 	  if ((KeyPressed == MENU_SELECT_1) || (KeyPressed == MENU_SELECT_2) || (KeyPressed == MENU_SELECT_3))
 	    {

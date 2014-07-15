@@ -537,7 +537,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             else if ((ev.getY() > height*3/4) && (ev.getX() > width*1/4) && (ev.getX() < width*3/4))
                 result = '2'; // Down
             else
-                result = ' '; // Middle
+                result = '\n'; // Middle is enter key
             Logging.debug ("Generating keystroke '" + String.valueOf((char)(result & 0xFF)) + "' from W,H=" + width + "," + height + " " + ev.toString());
             keyBuffer.clear();
             try {
@@ -585,9 +585,30 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         } catch (InterruptedException e) {
             Logging.fatal ("Failed to read keystroke from " + e);
         }
-        Logging.debug("Unblocking from character " + b);
+        Logging.debug("Unblocking from character " + b + " in waitForKeypress");
         return b;
     }
+
+    public byte waitForArrowpress() {
+        // Native code will call this to block for a key press
+        // Do not touch the input buffer if the result is not a numeric keypad direction
+        byte b = 0;
+        try {
+            b = keyBuffer.take().byteValue();
+            if ((b != '4') && (b != '8') && (b != '6') && (b != '2'))
+            {
+                // Not a direction key, so put the byte back
+                keyBuffer.put(b);
+                // Return back DIR_unknown which the native code knows how to interpret
+                b = -1;
+            }
+        } catch (InterruptedException e) {
+            Logging.fatal ("Failed to read keystroke from " + e);
+        }
+        Logging.debug("Unblocking from character " + b + " in waitForArrowpress");
+        return b;
+    }
+
 
     public byte pollForKeypress() {
         // Native code will call this to read a key but do not block if none available

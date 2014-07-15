@@ -83,6 +83,19 @@ char java_waitForKeypress(void) {
   return (result);
 }
 
+char java_waitForArrowpress(void) {
+  LOGD("waitForArrowpress making call to Java");
+
+  jclass clazz = (*jni_env)->GetObjectClass( jni_env, jni_object );
+  if (clazz == NULL) FATAL("Failed to GetObjectClass");
+  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "waitForArrowpress", "()B" );
+  if (methodID == NULL) FATAL("Failed to GetMethodID");
+  jbyte result = (*jni_env)->CallByteMethod (jni_env, jni_object, methodID);
+  (*jni_env)->DeleteLocalRef(jni_env, clazz);
+
+  return (result);
+}
+
 void java_blockUntilKeypress(void) {
   LOGD("blockUntilKeypress making call to Java");
 
@@ -172,14 +185,13 @@ int get_arrow (int enable_arrows, struct get_arrow_keys *set1, struct get_arrow_
 {
   // Update terminal with any output before we go to sleep
   ansi_fflush();
-  char pressed = java_waitForKeypress();
+  char pressed = java_waitForArrowpress();
   switch (pressed) {
   case '4': return DIR_left;
   case '8': return DIR_up;
   case '6': return DIR_right;
   case '2': return DIR_down;
-  case ' ': return DIR_unknown;
-  default: FATAL ("Unknown keypress %c", pressed);
+  default: return DIR_unknown;
   }
 }
 
@@ -198,4 +210,9 @@ void terminal_sleep (int seconds, int microseconds)
 {
   ansi_fflush (); /* Make sure all output gets sent to the screen before we sleep */
   usleep (seconds * 1000000 + microseconds);
+}
+
+char terminal_getchar (void)
+{
+  return wait_for_key();
 }

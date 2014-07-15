@@ -18,7 +18,10 @@
 #define set_term_delay(delay)
 #define set_term_buffer(buffer)
 #define set_term_default()
+char terminal_getchar();
 #else // __ANDROID__
+
+#define terminal_getchar() getchar()
 
 #define store_term_default() (tcgetattr (0, &default_terminal), \
 			   current_terminal = default_terminal)
