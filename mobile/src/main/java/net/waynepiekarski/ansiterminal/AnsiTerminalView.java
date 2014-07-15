@@ -40,7 +40,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public int mCharHeight;
         public int mCharWidthOffset;
         public int mCharHeightOffset;
-        public static final int mCharSpacing = 1;
+        public static final int mCharSpacingX = 2;
+        public static final int mCharSpacingY = 10;
         public static final int mTerminalWidth = 80;
         public static final int mTerminalHeight = 25;
         public static final int mDefaultForeground = Color.WHITE;
@@ -92,9 +93,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     Logging.fatal("Invalid width or height from getTextBounds");
                 lastWidth = mCharWidth;
                 lastHeight = mCharHeight;
-                mCharWidth = rect.width() + mCharSpacing;
-                mCharHeight = rect.height() + mCharSpacing;
-                Logging.debug("Calculated for fontsize=" + fontSize + " bounds width=" + mCharWidth + " height=" + mCharHeight);
+                mCharWidth = rect.width() + mCharSpacingX;
+                mCharHeight = rect.height() + mCharSpacingY;
+                Logging.debug("Calculated for size=" + fontSize + " bounds=" + mCharWidth + "x" + mCharHeight + " for total=" + (mCharWidth*terminalWidth) + "x" + (mCharHeight*terminalHeight) + " canvas=" + mCanvasWidth + "x" + mCanvasHeight);
                 if ((mCharWidth * terminalWidth > mCanvasWidth) || (mCharHeight * terminalHeight > mCanvasHeight)) {
                     // This font size is too big, we need to go back one step and finish
                     fontSize--;
@@ -105,7 +106,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     // Compute any remaining padding to center the image on the display
                     mCharWidthOffset = (mCanvasWidth - mCharWidth*terminalWidth) / 2;
                     mCharHeightOffset = (mCanvasHeight - mCharHeight*terminalHeight) / 2;
-                    Logging.debug("Offset is (" + mCharWidthOffset + "," + mCharHeightOffset + ") from terminal " + terminalWidth + "x" + terminalHeight + ", canvas " + mCanvasWidth + "x" + mCanvasHeight + " and char " + mCharWidth + "x" + mCharHeight);
+                    Logging.debug("Size is " + fontSize + ", offset is (" + mCharWidthOffset + "," + mCharHeightOffset + ") from terminal " + terminalWidth + "x" + terminalHeight + ", canvas " + mCanvasWidth + "x" + mCanvasHeight + " and char " + mCharWidth + "x" + mCharHeight);
                     return;
                 }
                 fontSize++;
@@ -115,7 +116,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public void clearFixedChar(Canvas canvas, int row, int col) {
             int x = mCharWidthOffset + (col-1) * mCharWidth;
             int y = mCharHeightOffset + row * mCharHeight;
-            canvas.drawRect(x, y - mCharHeight, x + mCharWidth, y, mPaintBackground);
+            canvas.drawRect(x, y - mCharHeight + mCharSpacingY - mCharSpacingY/2, x + mCharWidth, y + mCharSpacingY/2, mPaintBackground);
         }
 
         public void clearFixedString(Canvas canvas, String str, int row, int col, int border) {
@@ -240,6 +241,11 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             ansiTest.append(AnsiString.setAttr(AnsiString.NORMAL));
             ansiTest.append(AnsiString.setForeground(AnsiString.YELLOW));
             ansiTest.append(AnsiString.putString(10, 20, "Yellow text at row 10, col 20"));
+            ansiTest.append(AnsiString.setAttr(AnsiString.NORMAL));
+            ansiTest.append(AnsiString.putString(11, 11, "________________"));
+            ansiTest.append(AnsiString.putString(12, 12, "________________"));
+            ansiTest.append(AnsiString.putString(13, 13, "yyyyyyyyyyyyyyyy"));
+            ansiTest.append(AnsiString.putString(14, 14, "yyyyyyyyyyyyyyyy"));
 
             ansiTest.append(AnsiString.setBackground(AnsiString.GREEN));
             ansiTest.append(AnsiString.setForeground(AnsiString.RED));
