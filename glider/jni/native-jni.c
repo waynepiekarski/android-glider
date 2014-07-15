@@ -11,23 +11,60 @@ jobject jni_object = NULL;
 jbyteArray jni_array;
 int jni_array_len = 0;
 
-#define MAX_BYTE_ARRAY_LEN 1024
+// Large default buffer to use for storing each stdio session before flushing
+#define MAX_BYTE_ARRAY_LEN 1024*128
+char char_buffer[MAX_BYTE_ARRAY_LEN];
+char *char_buffer_ptr = char_buffer;
+size_t char_buffer_ofs = 0;
 
 #define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", fmt, ## __VA_ARGS__)
 #define FATAL(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", "FATAL: " fmt, ## __VA_ARGS__), exit(1)
 
 
-void java_submitAnsiBuffer(const char *buffer) {
+void java_submitAnsiBuffer(const char *buffer, size_t len) {
   LOGD("submitAnsiBuffer making call to Java");
 
   jclass clazz = (*jni_env)->GetObjectClass( jni_env, jni_object );
   if (clazz == NULL) FATAL("Failed to lookup GetObjectClass");
   jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "submitAnsiBuffer", "(I[B)V" );
   if (methodID == NULL) FATAL("Failed to lookup GetMethodID");
-  int len = strlen(buffer);
   (*jni_env)->SetByteArrayRegion(jni_env, jni_array, 0, len, buffer);
   (*jni_env)->CallVoidMethod (jni_env, jni_object, methodID, len, jni_array);
   (*jni_env)->DeleteLocalRef(jni_env, clazz);
+}
+
+
+void ansi_fflush (void)
+{
+  // Write all the chars in the buffer to the Java processing function
+  if (char_buffer_ofs == 0)
+    LOGD("Not performing ansi_fflush() since there is nothing in the buffer");
+  else {
+    java_submitAnsiBuffer(char_buffer, char_buffer_ofs);
+    char_buffer_ptr = char_buffer;
+    char_buffer_ofs = 0;
+  }
+}
+
+
+void ansi_printf (const char *format, ...)
+{
+  va_list args;
+  va_start (args, format);
+  int result = vsnprintf (char_buffer_ptr, MAX_BYTE_ARRAY_LEN-char_buffer_ofs, format, args);
+  va_end (args);
+  if (result < 0) FATAL("Failed to call vsnprintf()");
+  char_buffer_ofs += result;
+  char_buffer_ptr += result;
+}
+
+
+void ansi_putchar (char ch)
+{
+  if (char_buffer_ofs == MAX_BYTE_ARRAY_LEN) FATAL("Internal JNI buffer exceeded");
+  *char_buffer_ptr = ch;
+  char_buffer_ptr++;
+  char_buffer_ofs++;
 }
 
 

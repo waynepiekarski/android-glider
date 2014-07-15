@@ -1,5 +1,8 @@
 #include "terminal.h"
 
+
+#ifndef __ANDROID__
+
   
 void flush_stdin (void)
 {
@@ -217,3 +220,5 @@ int delay_for_key (int seconds, int microseconds)
   set_term_settings (stored_terminal);
   return (TRUE);
 }
+
+#endif // __ANDROID__

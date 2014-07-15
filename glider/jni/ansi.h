@@ -37,20 +37,31 @@
 
 
 /* Macros for terminal operations */
+#ifdef __ANDROID__
+#include <android/log.h>
+#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-Glider", "%s:%d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
+void ansi_fflush(void);
+#define error_printf(...) ansi_printf(__VA_ARGS__), ansi_fflush()
+void ansi_printf(const char* format, ...);
+void ansi_putchar(char ch);
+#else // __ANDROID__
+#define LOGD(fmt, ...)
 #define ansi_fflush() fflush(stdout)
 #define error_printf(...) fprintf(stderr, __VA_ARGS__)
 #define ansi_printf(...) printf(__VA_ARGS__)
 #define ansi_putchar(ch) putchar(ch)
-#define ansi_Position(X, Y) printf ("\033[%d;%dH", Y, X)
-#define ansi_PutChar(X, Y, Char) printf ("\033[%d;%dH%c", Y, X, Char)
-#define ansi_PutString(X, Y, String) printf ("\033[%d;%dH%s", Y, X, String)
-#define ansi_ClearScreen() printf ("\033[2J")
+#endif // __ANDROID__
 
-#define ansi_DefaultAttr() printf ("\033[0m")
-#define ansi_SetAttr(Mode) printf ("\033[%dm", Mode)
-#define ansi_SetFG(FG) printf ("\033[3%dm", FG)
-#define ansi_SetBG(BG) printf ("\033[4%dm", BG)
-#define ansi_SetColor(Attr, FG, BG) printf ("\033[%dm\033[3%dm\033[4%dm", Attr, FG, BG)
+#define ansi_Position(X, Y) ansi_printf ("\033[%d;%dH", Y, X)
+#define ansi_PutChar(X, Y, Char) ansi_printf ("\033[%d;%dH%c", Y, X, Char)
+#define ansi_PutString(X, Y, String) ansi_printf ("\033[%d;%dH%s", Y, X, String)
+#define ansi_ClearScreen() ansi_printf ("\033[2J")
+
+#define ansi_DefaultAttr() ansi_printf ("\033[0m")
+#define ansi_SetAttr(Mode) ansi_printf ("\033[%dm", Mode)
+#define ansi_SetFG(FG) ansi_printf ("\033[3%dm", FG)
+#define ansi_SetBG(BG) ansi_printf ("\033[4%dm", BG)
+#define ansi_SetColor(Attr, FG, BG) ansi_printf ("\033[%dm\033[3%dm\033[4%dm", Attr, FG, BG)
 
 #define CHAR_plus '+'
 #define CHAR_endpoint '+'

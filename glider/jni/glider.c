@@ -16,6 +16,7 @@
 #include "glider_gfx.h"
 #include "glider_stats.h"
 #include "glider_anim.h"
+#include "ansi.h"
 
 
 struct termios default_terminal;
