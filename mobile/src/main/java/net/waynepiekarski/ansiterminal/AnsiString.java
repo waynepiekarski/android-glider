@@ -18,7 +18,7 @@ public class AnsiString {
     public static String position(int r, int c) {
         // Negative RC values are illegal, but values that are larger than the terminal size are
         // ok and should generate wraparound automatically
-        if ((r < 0) || (c < 0)) Logging.fatal("Negative row or column value not allowed");
+        if ((r < 1) || (c < 1)) Logging.fatal("Negative row or column value not allowed");
         return escape + r + ";" + c + "H";
     }
 

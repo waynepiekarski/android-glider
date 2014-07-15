@@ -113,16 +113,16 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         }
 
         public void clearFixedChar(Canvas canvas, int row, int col) {
-            int x = mCharWidthOffset + col * mCharWidth;
-            int y = mCharHeightOffset + (row+1) * mCharHeight;
+            int x = mCharWidthOffset + (col-1) * mCharWidth;
+            int y = mCharHeightOffset + row * mCharHeight;
             canvas.drawRect(x, y - mCharHeight, x + mCharWidth, y, mPaintBackground);
         }
 
         public void clearFixedString(Canvas canvas, String str, int row, int col, int border) {
             int clen = border*2 + str.length();
             int rlen = border*2 + 1;
-            for (int c = 0; c < clen; c++)
-                for (int r = 0; r < rlen; r++)
+            for (int c = 1; c <= clen; c++)
+                for (int r = 1; r <= rlen; r++)
                     clearFixedChar(canvas, row+r-border, col+c-border);
         }
 
@@ -133,20 +133,20 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             for (int c = 0; c < clen; c++)
                 for (int r = 0; r < rlen; r++)
                     // Make sure we never generate a negative coordinate, but overflow is good
-                    if ((col+c-border >= 0) && (row+r-border >= 0))
+                    if ((col+c-border >= 1) && (row+r-border >= 1))
                         result.append(AnsiString.putChar(row+r-border, col+c-border, ' '));
             return result;
         }
 
         public void drawFixedChar (Canvas canvas, char ch, int row, int col) {
-            int x = mCharWidthOffset + col * mCharWidth;
-            int y = mCharHeightOffset + (row+1) * mCharHeight;
+            int x = mCharWidthOffset + (col-1) * mCharWidth;
+            int y = mCharHeightOffset + row * mCharHeight;
             canvas.drawText(String.valueOf(ch), x, y, mPaintText);
         }
 
         public void drawFixedChar (Canvas canvas, byte b, int row, int col) {
-            int x = mCharWidthOffset + col * mCharWidth;
-            int y = mCharHeightOffset + (row+1) * mCharHeight;
+            int x = mCharWidthOffset + (col-1) * mCharWidth;
+            int y = mCharHeightOffset + row * mCharHeight;
             canvas.drawText(String.valueOf((char) (b & 0xFF)), x, y, mPaintText);
             // Logging.debug ("Drawing " + String.valueOf((char)(b&0xFF)) + " at RC" + row + "," + col + " at XY" + x + "," + y + " with OFS" + mCharWidthOffset + "," + mCharHeightOffset);
         }
@@ -160,9 +160,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         }
 
         public void drawDebug(Canvas canvas, int width, int height) {
-            for (int c = 0; c < width; c++) {
-                for (int r = 0; r < height; r++) {
-                    if ((c == 0) || (c == width-1) || (r == 0) || (r == height-1))
+            for (int c = 1; c <= width; c++) {
+                for (int r = 1; r <= height; r++) {
+                    if ((c == 1) || (c == width) || (r == 1) || (r == height))
                         drawFixedChar(canvas, '#', r, c);
                     else {
                         drawFixedChar(canvas, Character.forDigit(c % 10, 10), r, c);
@@ -173,9 +173,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
         public StringBuilder ansiDrawDebug(int width, int height) {
             StringBuilder result = new StringBuilder();
-            for (int c = 0; c < width; c++) {
-                for (int r = 0; r < height; r++) {
-                    if ((c == 0) || (c == width-1) || (r == 0) || (r == height-1))
+            for (int c = 1; c <= width; c++) {
+                for (int r = 1; r <= height; r++) {
+                    if ((c == 1) || (c == width) || (r == 1) || (r == height))
                         result.append(AnsiString.putChar(r, c, '#'));
                     else {
                         result.append(AnsiString.putChar(r, c, Character.forDigit(c % 10, 10)));
@@ -198,8 +198,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             drawAnsiBuffer(canvas, buffer);
         }
 
-        int tempR = 0;
-        int tempC = 0;
+        int tempR = 1;
+        int tempC = 1;
         public void doDrawDebug(Canvas canvas) {
             if (mCanvasDirty) {
                 mCanvasDirty = false;
@@ -212,28 +212,28 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
             // Debug the full layout of the display
             ansiTest.append(ansiDrawDebug(mTerminalWidth, mTerminalHeight));
-            ansiTest.append(AnsiString.putString(1, 0, " "));
-            ansiTest.append(AnsiString.putString(0, 1, " "));
-            ansiTest.append(AnsiString.putString(mTerminalHeight-1, mTerminalWidth-2, " "));
-            ansiTest.append(AnsiString.putString(mTerminalHeight-2, mTerminalWidth-1, " "));
+            ansiTest.append(AnsiString.putString(2, 1, " "));
+            ansiTest.append(AnsiString.putString(1, 2, " "));
+            ansiTest.append(AnsiString.putString(mTerminalHeight, mTerminalWidth-1, " "));
+            ansiTest.append(AnsiString.putString(mTerminalHeight-1, mTerminalWidth, " "));
 
             // Draw some ANSI text over the top of everything
-            ansiTest.append(AnsiString.putString(1, 1, "Hello ANSI default"));
+            ansiTest.append(AnsiString.putString(2, 2, "Hello ANSI default"));
             ansiTest.append(AnsiString.setForeground(AnsiString.BLUE));
-            ansiTest.append(AnsiString.putString(2, 2, "Hello ANSI blue"));
+            ansiTest.append(AnsiString.putString(3, 3, "Hello ANSI blue"));
             ansiTest.append(AnsiString.setForeground(AnsiString.CYAN));
-            ansiTest.append(AnsiString.putString(3, 3, "Hello ANSI cyan"));
+            ansiTest.append(AnsiString.putString(4, 4, "Hello ANSI cyan"));
             ansiTest.append(AnsiString.setColor(AnsiString.REVERSE, AnsiString.WHITE, AnsiString.BLACK));
-            ansiTest.append(AnsiString.putString(4, 4, "Inverted black on white"));
+            ansiTest.append(AnsiString.putString(5, 5, "Inverted black on white"));
             ansiTest.append(AnsiString.defaultAttr());
-            ansiTest.append(AnsiString.putString(5, 5, "Normal white on black"));
+            ansiTest.append(AnsiString.putString(6, 6, "Normal white on black"));
             ansiTest.append(AnsiString.setForeground(AnsiString.RED));
             ansiTest.append(AnsiString.setBackground(AnsiString.YELLOW));
-            ansiTest.append(AnsiString.putString(6, 6, "Red on yellow"));
+            ansiTest.append(AnsiString.putString(7, 7, "Red on yellow"));
             ansiTest.append(AnsiString.setAttr(AnsiString.REVERSE));
-            ansiTest.append(AnsiString.putString(7, 7, "Inverted with yellow on red"));
+            ansiTest.append(AnsiString.putString(8, 8, "Inverted with yellow on red"));
             ansiTest.append(AnsiString.defaultAttr());
-            ansiTest.append(AnsiString.putString(8, 8, "Normal white on black"));
+            ansiTest.append(AnsiString.putString(9, 9, "Normal white on black"));
             ansiTest.append(AnsiString.setForeground(AnsiString.GREEN));
             ansiTest.append(AnsiString.setAttr(AnsiString.REVERSE));
             ansiTest.append(AnsiString.putString(20, 10, "Green inverse text at row 20, col 10"));
@@ -251,9 +251,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             ansiTest.append(ansiClearFixedString("R=" + tempR + ",C=" + tempC, tempR, tempC, 1));
             ansiTest.append(AnsiString.putString(tempR, tempC, "R="+tempR+",C="+tempC));
             tempR += 1;
-            if (tempR >= 25) tempR = 0;
+            if (tempR > 25) tempR = 1;
             tempC += 1;
-            if (tempC >= 80) tempC = 0;
+            if (tempC > 80) tempC = 1;
 
             // Now parse the ANSI buffer and render it
             drawAnsiBuffer(canvas, ansiTest.toString());
