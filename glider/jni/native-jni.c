@@ -1,4 +1,5 @@
 #include <android/log.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <jni.h>
@@ -57,6 +58,9 @@ char java_checkForKeypress(void) {
 }
 
 
+int glider_main (void);
+
+
 // Method that Java will call to get things started
 void
 Java_net_waynepiekarski_ansiterminal_AnsiTerminalView_nativeAnsiCode(
@@ -73,21 +77,7 @@ Java_net_waynepiekarski_ansiterminal_AnsiTerminalView_nativeAnsiCode(
   jni_array = (*jni_env)->NewByteArray( jni_env, MAX_BYTE_ARRAY_LEN );
   jni_array_len = 0;
 
-  // Spin in a loop dispatching buffers
-  int c = 0;
-  while (1) {
-    char buffer [MAX_BYTE_ARRAY_LEN];
-
-    LOGD ("sleep(2)");
-    sleep(2);
-
-    sprintf (buffer, "\033[%d;%dH" "Hello world %d to Java", c, c, c);
-    LOGD ("Submitting string [%s]", buffer);
-    java_submitAnsiBuffer(buffer);
-
-    char ch = java_checkForKeypress();
-    LOGD ("received char [%c]=0x%x,d%d", ch, ch, ch);
-
-    c++;
-  }
+  // Call into the Glider main() function to get started
+  int result = glider_main();
+  LOGD ("glider_main() ended with exit code %d", result);
 }

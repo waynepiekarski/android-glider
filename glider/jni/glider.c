@@ -456,7 +456,11 @@ void signal_handler (int signum)
 }
 
 
+#ifdef __ANDROID__
+int glider_main (void)
+#else
 int main (void)
+#endif // __ANDROID__
 {
   char version_string [80];
 
