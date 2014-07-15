@@ -118,15 +118,17 @@ void java_clearForKeypress(void) {
   (*jni_env)->DeleteLocalRef(jni_env, clazz);
 }
 
-void java_timeUntilKeypress(int microseconds) {
+int java_timeUntilKeypress(int microseconds) {
   LOGD("timeUntilKeypress making call to Java with %d usec", microseconds);
 
   jclass clazz = (*jni_env)->GetObjectClass( jni_env, jni_object );
   if (clazz == NULL) FATAL("Failed to GetObjectClass");
-  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "timeUntilKeypress", "(I)V" );
+  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "timeUntilKeypress", "(I)Z" );
   if (methodID == NULL) FATAL("Failed to GetMethodID");
-  (*jni_env)->CallVoidMethod (jni_env, jni_object, methodID, microseconds);
+  int result = (*jni_env)->CallBooleanMethod (jni_env, jni_object, methodID, microseconds);
   (*jni_env)->DeleteLocalRef(jni_env, clazz);
+
+  return result;
 }
 
 
@@ -199,11 +201,13 @@ int delay_for_key (int seconds, int microseconds)
 {
   // Update terminal with any output before we go to sleep
   ansi_fflush();
-  // Flushes the input queue, waits the specified time. If no keys are pressed during
-  // this time, then return false. Otherwise, leave the keys in the buffer so they are
-  // ready to read when the next call is made.
-  int micro = microseconds + seconds * 1000000;
-  java_timeUntilKeypress(micro);
+  // Flushes the input queue, waits the specified time. Then, we check the input buffer
+  // and return true if there are any keys available. But don't let the key shorten the time
+  // of the sleep that we do!
+  terminal_sleep (seconds, microseconds);
+
+  // Are there any keys available?
+  return java_timeUntilKeypress(0);
 }
 
 void terminal_sleep (int seconds, int microseconds)

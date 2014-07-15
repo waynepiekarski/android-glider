@@ -563,17 +563,21 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         Logging.debug("Found that key " + b + " is now available, it is ready in the buffer");
     }
 
-    public void timeUntilKeypress(int microseconds) {
+    public boolean timeUntilKeypress(int microseconds) {
         Logging.debug("Waiting for " + microseconds + " usec in timeUntilKeypress");
         // Native code will call this, sleep until a key is available, but do not read it
+        boolean ret = false;
         try {
             // Sleep here
             Byte result = keyBuffer.poll(microseconds, TimeUnit.MICROSECONDS);
-            if (result != null)
+            if (result != null) {
                 keyBuffer.put(result); // Put it back
+                ret = true;
+            }
         } catch (InterruptedException e) {
             Logging.fatal ("Failed to read keystroke from " + e);
         }
+        return ret;
     }
 
 
