@@ -311,8 +311,10 @@ void game (void)
 	break;
       }
   } while (lives > 0);
-  
+
+#ifndef __ANDROID__
   log_score (score, level); /* This records the score of anyone who finishes or runs out of lives */
+#endif // __ANDROID__
 }
 
 
@@ -474,7 +476,9 @@ int main (void)
   store_term_default ();
   set_term_raw ();
 
+#ifndef __ANDROID__
   log_usage ();
+#endif
   init_level_maps ();
 
   draw_frame ();

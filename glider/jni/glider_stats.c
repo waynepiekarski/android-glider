@@ -1,3 +1,5 @@
+#ifndef __ANDROID__
+
 #include "glider_stats.h"
 #include <time.h>
 
@@ -229,3 +231,4 @@ void sort_scores (void)
   /* All data has been read in */
 }
   
+#endif // __ANDROID__
