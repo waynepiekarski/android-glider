@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <jni.h>
+#include "ansi.h"
 
 
 JavaVM* jni_java_vm = NULL;
@@ -17,8 +18,9 @@ char char_buffer[MAX_BYTE_ARRAY_LEN];
 char *char_buffer_ptr = char_buffer;
 size_t char_buffer_ofs = 0;
 
-#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", fmt, ## __VA_ARGS__)
-#define FATAL(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", "FATAL: " fmt, ## __VA_ARGS__), exit(1)
+#undef LOGD
+#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", "%s: %d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
+#define FATAL(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", "FATAL: %s:%d " fmt, __FILE__, __LINE__, ## __VA_ARGS__), exit(1)
 
 
 void java_submitAnsiBuffer(const char *buffer, size_t len) {
@@ -81,17 +83,37 @@ char java_waitForKeypress(void) {
   return (result);
 }
 
-char java_checkForKeypress(void) {
-  LOGD("checkForKeypress making call to Java");
+void java_blockUntilKeypress(void) {
+  LOGD("blockUntilKeypress making call to Java");
 
   jclass clazz = (*jni_env)->GetObjectClass( jni_env, jni_object );
   if (clazz == NULL) FATAL("Failed to GetObjectClass");
-  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "checkForKeypress", "()B" );
+  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "blockUntilKeypress", "()V" );
   if (methodID == NULL) FATAL("Failed to GetMethodID");
-  jbyte result = (*jni_env)->CallByteMethod (jni_env, jni_object, methodID);
+  (*jni_env)->CallVoidMethod (jni_env, jni_object, methodID);
   (*jni_env)->DeleteLocalRef(jni_env, clazz);
+}
 
-  return (result);
+void java_clearForKeypress(void) {
+  LOGD("clearForKeypress making call to Java");
+
+  jclass clazz = (*jni_env)->GetObjectClass( jni_env, jni_object );
+  if (clazz == NULL) FATAL("Failed to GetObjectClass");
+  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "clearForKeypress", "()V" );
+  if (methodID == NULL) FATAL("Failed to GetMethodID");
+  (*jni_env)->CallVoidMethod (jni_env, jni_object, methodID);
+  (*jni_env)->DeleteLocalRef(jni_env, clazz);
+}
+
+void java_timeUntilKeypress(int microseconds) {
+  LOGD("timeUntilKeypress making call to Java with %d usec", microseconds);
+
+  jclass clazz = (*jni_env)->GetObjectClass( jni_env, jni_object );
+  if (clazz == NULL) FATAL("Failed to GetObjectClass");
+  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "timeUntilKeypress", "(I)V" );
+  if (methodID == NULL) FATAL("Failed to GetMethodID");
+  (*jni_env)->CallVoidMethod (jni_env, jni_object, methodID, microseconds);
+  (*jni_env)->DeleteLocalRef(jni_env, clazz);
 }
 
 
@@ -117,4 +139,63 @@ Java_net_waynepiekarski_ansiterminal_AnsiTerminalView_nativeAnsiCode(
   // Call into the Glider main() function to get started
   int result = glider_main();
   LOGD ("glider_main() ended with exit code %d", result);
+}
+
+
+
+// Implementation of terminal.c functions
+void flush_stdin (void)
+{
+  // Clear all input characters
+  java_clearForKeypress();
+}
+
+int wait_for_key (void)
+{
+  // Update terminal with any output before we go to sleep
+  ansi_fflush();
+  // Sleep until a keypress arrives, then return it back
+  return java_waitForKeypress();
+}
+
+void wait_for_keypress (void)
+{
+  // Update terminal with any output before we go to sleep
+  ansi_fflush();
+  // Sleep until a keypress arrives, then leave it ready for reading
+  java_blockUntilKeypress();
+}
+
+struct get_arrow_keys;
+
+int get_arrow (int enable_arrows, struct get_arrow_keys *set1, struct get_arrow_keys *set2)
+{
+  // Update terminal with any output before we go to sleep
+  ansi_fflush();
+  char pressed = java_waitForKeypress();
+  switch (pressed) {
+  case '4': return DIR_left;
+  case '8': return DIR_up;
+  case '6': return DIR_right;
+  case '2': return DIR_down;
+  case ' ': return DIR_unknown;
+  default: FATAL ("Unknown keypress %c", pressed);
+  }
+}
+
+int delay_for_key (int seconds, int microseconds)
+{
+  // Update terminal with any output before we go to sleep
+  ansi_fflush();
+  // Flushes the input queue, waits the specified time. If no keys are pressed during
+  // this time, then return false. Otherwise, leave the keys in the buffer so they are
+  // ready to read when the next call is made.
+  int micro = microseconds + seconds * 1000000;
+  java_timeUntilKeypress(micro);
+}
+
+void terminal_sleep (int seconds, int microseconds)
+{
+  ansi_fflush (); /* Make sure all output gets sent to the screen before we sleep */
+  usleep (seconds * 1000000 + microseconds);
 }

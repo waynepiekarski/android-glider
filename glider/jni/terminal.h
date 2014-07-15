@@ -9,6 +9,17 @@
 #define TRUE 1
 #define FALSE 0
 
+#ifdef __ANDROID__
+#define store_term_default()
+#define get_term_settings(arg)
+#define set_term_settings(arg)
+#define set_term_raw()
+#define set_term(buf,delay)
+#define set_term_delay(delay)
+#define set_term_buffer(buffer)
+#define set_term_default()
+#else // __ANDROID__
+
 #define store_term_default() (tcgetattr (0, &default_terminal), \
 			   current_terminal = default_terminal)
 
@@ -32,6 +43,7 @@
 				 tcsetattr (STDIN_FILENO, TCSANOW, &current_terminal))
   
 #define set_term_default() tcsetattr (0, TCSANOW, &default_terminal)
+#endif // __ANDROID__
 
 
 extern struct termios default_terminal;

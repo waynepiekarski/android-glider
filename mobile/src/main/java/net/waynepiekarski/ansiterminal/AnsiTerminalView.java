@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -533,6 +534,34 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         return true; // We processed this event
     }
 
+    public void blockUntilKeypress() {
+        // Native code will call this, sleep until a key is available, but do not read it
+        byte b = 0;
+        try {
+            // Sleep here
+            b = keyBuffer.take().byteValue();
+            // Put it back into the buffer
+            keyBuffer.put(b);
+        } catch (InterruptedException e) {
+            Logging.fatal ("Failed to read keystroke from " + e);
+        }
+        Logging.debug("Found that key " + b + " is now available, it is ready in the buffer");
+    }
+
+    public void timeUntilKeypress(int microseconds) {
+        Logging.debug("Waiting for " + microseconds + " usec in timeUntilKeypress");
+        // Native code will call this, sleep until a key is available, but do not read it
+        try {
+            // Sleep here
+            Byte result = keyBuffer.poll(microseconds, TimeUnit.MICROSECONDS);
+            if (result != null)
+                keyBuffer.put(result); // Put it back
+        } catch (InterruptedException e) {
+            Logging.fatal ("Failed to read keystroke from " + e);
+        }
+    }
+
+
     public byte waitForKeypress() {
         // Native code will call this to block for a key press
         byte b = 0;
@@ -545,7 +574,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         return b;
     }
 
-    public byte checkForKeypress() {
+    public byte pollForKeypress() {
         // Native code will call this to read a key but do not block if none available
         byte b = 0;
         Byte result = keyBuffer.poll();
@@ -553,6 +582,16 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             b = result.byteValue();
         Logging.debug("Polled with character " + b);
         return b;
+    }
+
+    public boolean checkForKeypress() {
+        // Native code will call this to see if there is a key available
+        return !keyBuffer.isEmpty();
+    }
+
+    public void clearForKeypress() {
+        // Flush out all key presses
+        keyBuffer.clear();
     }
 
     // This will be called within a new thread and can make calls to the three methods above
