@@ -22,6 +22,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
     // Thread object that does most of the work here, AnsiTerminalView is just a wrapper
     RenderThread mRenderThread;
 
+    // Thread object that runs the native C code, started after the SurfaceView is visible
+    Thread mNativeThread = null;
+
     class RenderThread extends Thread {
         public SurfaceHolder mSurfaceHolder;
         public Context mContext;
@@ -465,17 +468,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         Logging.debug("Starting thread for RenderThread");
         mRenderThread = new RenderThread(holder, context);
 
-        // Create thread to run our native code implementation
-        Logging.debug ("Starting thread for nativeAnsiCode");
-        Thread nativeThread = new Thread(new Runnable() {
-            public void run() {
-                Logging.debug("Calling into JNI nativeAnsiCode()");
-                nativeAnsiCode();
-                Logging.fatal("nativeAnsiCode() has returned unexpectedly");
-            }
-        });
-        nativeThread.start();
-
         // Get key events
         setFocusable(true);
     }
@@ -483,6 +475,19 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Logging.debug("surfaceChanged");
         mRenderThread.setSurfaceSize(width, height);
+
+        // Create thread to run our native code implementation
+        if (mNativeThread == null) {
+            Logging.debug("Starting thread for nativeAnsiCode");
+            mNativeThread = new Thread(new Runnable() {
+                public void run() {
+                    Logging.debug("Calling into JNI nativeAnsiCode()");
+                    nativeAnsiCode();
+                    Logging.fatal("nativeAnsiCode() has returned unexpectedly");
+                }
+            });
+            mNativeThread.start();
+        }
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
