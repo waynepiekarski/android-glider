@@ -2,6 +2,7 @@
 
 #include "glider_stats.h"
 #include <time.h>
+#include "ansi.h"
 
 void log_score (long int score, int level) /* wingame is TRUE if the whole game was beaten */
 {
@@ -34,7 +35,7 @@ void log_score (long int score, int level) /* wingame is TRUE if the whole game 
       fp = fopen (GLIDER_WINFILE, "a");
       if (fp == NULL)
 	{
-	  fprintf (stderr, "Could not open win file for appending!\n");
+	  error_printf ("Could not open win file for appending!\n");
 	  exit (1);
 	}
       fprintf (fp, "User %8s finished Glider v%5s with score %8ld on %s\n", user_info.pw_name, GLIDER_VERSION, score, time_string);
@@ -49,7 +50,7 @@ void log_score (long int score, int level) /* wingame is TRUE if the whole game 
   fp = fopen (GLIDER_SCOREFILE, "a");
   if (fp == NULL)
     {
-      fprintf (stderr, "Could not open score file for appending!\n");
+      error_printf ("Could not open score file for appending!\n");
       exit (1);
     }
   fprintf (fp, "Version = %5s User = %8s   Score = %8ld   Level = %2d %c   Time = %s\n", GLIDER_VERSION, user_info.pw_name, score, level, game_status, time_string);
@@ -84,7 +85,7 @@ void log_usage (void)
   fp = fopen (GLIDER_LOGFILE, "a");
   if (fp == NULL)
     {
-      fprintf (stderr, "Cannot open log file for appending\n");
+      error_printf ("Cannot open log file for appending\n");
       exit (1);
     }
   
@@ -139,7 +140,7 @@ int get_ppid (int pid)
   fp = fopen (filename, "r");
   if (fp == NULL)
     {
-      fprintf (stderr, "Could not open /proc to get the stat information\n");
+      error_printf ("Could not open /proc to get the stat information\n");
       exit (1);
     }
   fscanf (fp, "%s", data);
@@ -168,7 +169,7 @@ char *get_exec (int pid)
   fp = fopen (filename, "r");
   if (fp == NULL)
     {
-      fprintf (stderr, "Could not open /proc to get the stat information\n");
+      error_printf ("Could not open /proc to get the stat information\n");
       exit (1);
     }
   fscanf (fp, "%s", data);
@@ -212,7 +213,7 @@ void sort_scores (void)
   fp = fopen (GLIDER_SCOREFILE, "r");
   if (fp == NULL)
     {
-      fprintf (stderr, "Could not open score file for reading\n");
+      error_printf ("Could not open score file for reading\n");
       exit (1);
     }
   

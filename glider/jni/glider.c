@@ -119,7 +119,7 @@ void display_message (int message, int lives, int level, int score)
       centre_text ("Press <5> <Enter> or <Space>", y1 + MAX_SCR_MESSAGE_Y + 2 * MSG_BORDER_Y + 1, MAX_SCR_COLS);
       centre_text ("to continue....", y1 + MAX_SCR_MESSAGE_Y + 2 * MSG_BORDER_Y + 2, MAX_SCR_COLS); 
       ansi_Position (1, MAX_SCR_ROWS);
-      printf (" Game Info  -  Score: [%6d]  Lives Remaining: [%2d]  Next Level: [%2d]    ", score, lives, level);
+      ansi_printf (" Game Info  -  Score: [%6d]  Lives Remaining: [%2d]  Next Level: [%2d]    ", score, lives, level);
       ansi_SetAttr (ATTR_normal);
     }
   else if (message == MSG_WINLEVEL)
@@ -176,10 +176,10 @@ int play_level (int level, long int *score, int lives, int total_score)
   put_screen (level_data [level].map);
   ansi_Position (2, MAX_SCR_ROWS);
   ansi_SetAttr (ATTR_reverse);
-  printf (" Game Info  -  Score: [%6d]  Lives Remaining: [%2d]  Current Level: [%2d]", total_score, lives, level);
+  ansi_printf (" Game Info  -  Score: [%6d]  Lives Remaining: [%2d]  Current Level: [%2d]", total_score, lives, level);
   ansi_SetAttr (ATTR_normal);
   park_cursor ();
-  fflush (stdout);
+  ansi_fflush ();
   sleep (WAIT_FOR_UPDATE); /* Really slow terminals need a few seconds to catch up */
   start_time ();
   
@@ -442,18 +442,17 @@ void menu (void)
 	default:
 	  ansi_Position (1, MAX_SCR_ROWS);
 	  ansi_SetAttr (ATTR_reverse);
-	  printf ("This option is currently not supported");
+	  ansi_printf ("This option is currently not supported");
 	  ansi_SetAttr (ATTR_normal);
 	  break;
 	}
     }
 }
 
-#define PRINT (printf ("Line: %d\n", __LINE__), fflush (stdout))
 
 void signal_handler (int signum)
 {
-  printf ("Signal handler %d ... Exiting...", signum);
+  ansi_printf ("Signal handler %d ... Exiting...", signum);
   exit (1);
 }
 

@@ -8,19 +8,19 @@ void draw_frame (void)
   
   ansi_SetAttr (ATTR_reverse);
   ansi_Position (1, 1);
-  printf ("    Glider/UX Version %s - Coded by Wayne Piekarski (9506012x) - %2d/%d/%2d   \n", GLIDER_VERSION, GLIDER_DAY, GLIDER_MONTH, GLIDER_YEAR);
+  ansi_printf ("    Glider/UX Version %s - Coded by Wayne Piekarski (9506012x) - %2d/%d/%2d   \n", GLIDER_VERSION, GLIDER_DAY, GLIDER_MONTH, GLIDER_YEAR);
   
   for (cy = 1; cy <= MAX_SCR_ROWS; cy++)
     {
       ansi_Position (1, cy);
-      putchar (CHAR_space);
+      ansi_putchar (CHAR_space);
       ansi_Position (MAX_SCR_COLS, cy);
-      putchar (CHAR_space);
+      ansi_putchar (CHAR_space);
     }
   
   ansi_Position (1, MAX_SCR_ROWS);
   for (cx = 1; cx <= MAX_SCR_COLS; cx++)
-    putchar (CHAR_space);
+    ansi_putchar (CHAR_space);
   
   ansi_DefaultAttr ();
 }
@@ -65,7 +65,7 @@ void move_picture (int prev_x, int prev_y, int x, int y, int width, int height, 
 	    {
 	      if (previous == 0)
 		ansi_Position (cx+x, cy+y);
-	      putchar (current);
+	      ansi_putchar (current);
 	    } 
 	  previous = current;
 	}
@@ -85,13 +85,13 @@ void put_picture (int x_offset, int y_offset, int width, int height, char *pixma
 	    if ((cx == 0) || (pixmap [cy*width+cx-1] == CHAR_space))
 	      ansi_Position (x_offset+cx, y_offset+cy);
 	    if (pixmap [cy*width+cx] != CHAR_space)
-	      putchar (pixmap [cy*width+cx]);
+	      ansi_putchar (pixmap [cy*width+cx]);
 	  }
 	else if (image_attributes == IMAGE_SOLID)
 	  {
 	    if (cx == 0)
 	      ansi_Position (x_offset+cx, y_offset+cy);
-	    putchar (pixmap [cy*width+cx]);
+	    ansi_putchar (pixmap [cy*width+cx]);
 	  }
       }
 }
@@ -105,6 +105,6 @@ void put_screen (char *pixmap)
     {
       ansi_Position (2, cy+1);
       for (cx = 1; cx <= MAX_SCR_COLS-2; cx++)
-	putchar (pixmap [cy*MAX_SCR_COLS+cx]);
+	ansi_putchar (pixmap [cy*MAX_SCR_COLS+cx]);
     }
 }

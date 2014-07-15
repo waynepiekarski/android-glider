@@ -37,6 +37,10 @@
 
 
 /* Macros for terminal operations */
+#define ansi_fflush() fflush(stdout)
+#define error_printf(...) fprintf(stderr, __VA_ARGS__)
+#define ansi_printf(...) printf(__VA_ARGS__)
+#define ansi_putchar(ch) putchar(ch)
 #define ansi_Position(X, Y) printf ("\033[%d;%dH", Y, X)
 #define ansi_PutChar(X, Y, Char) printf ("\033[%d;%dH%c", Y, X, Char)
 #define ansi_PutString(X, Y, String) printf ("\033[%d;%dH%s", Y, X, String)

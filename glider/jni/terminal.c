@@ -98,7 +98,7 @@ int flush_stdin_keep1 (void)
 #ifdef LINUX
 void terminal_sleep (int seconds, int microseconds)
 {
-  fflush (stdout); /* Make sure all output gets sent to the screen before we sleep */
+  ansi_fflush (); /* Make sure all output gets sent to the screen before we sleep */
   usleep (seconds * 1000000 + microseconds);
 }
 #endif
@@ -111,7 +111,7 @@ void terminal_sleep (int seconds, int microseconds)
   Delay.tv_sec = seconds;
   Delay.tv_nsec = microseconds * 1000;
   
-  fflush (stdout); /* Make sure all output gets sent to the screen before we sleep */
+  ansi_fflush (); /* Make sure all output gets sent to the screen before we sleep */
   nanosleep (&Delay, &Delay);
 }
 #endif

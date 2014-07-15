@@ -14,7 +14,7 @@ void repeat_char (int counter, char charachter)
 {
   while (counter != 0)
     {
-      putchar (charachter);
+      ansi_putchar (charachter);
       counter--;
     }
 }
@@ -28,7 +28,7 @@ void fill_area_XY (int x1, int y1, int x2, int y2, char Fill)
     {
       ansi_Position (x1, cy);
       for (cx = 0; cx <= (x2 > x1 ? x2 - x1 : x1 - x2); cx++)
-	printf ("%c", Fill);
+	ansi_printf ("%c", Fill);
     }
 }
 
@@ -44,18 +44,18 @@ void draw_box_XY (int x1, int y1, int x2, int y2, char Horizontal, char Vertical
 
   ansi_Position (x1+1, y1);
   for (cx = x1+1; cx <= x2-1; cx++)
-    putchar (Horizontal);
+    ansi_putchar (Horizontal);
 
   ansi_Position (x1+1, y2);
   for (cx = x1+1; cx <= x2-1; cx++)
-    putchar (Horizontal);
+    ansi_putchar (Horizontal);
 
   for (cy = y1+1; cy <= y2-1; cy++)
     {
       ansi_Position (x1, cy);
-      putchar (Vertical);
+      ansi_putchar (Vertical);
       ansi_Position (x2, cy);
-      putchar (Vertical);
+      ansi_putchar (Vertical);
     }
 }
 

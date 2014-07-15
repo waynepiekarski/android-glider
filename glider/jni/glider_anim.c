@@ -62,15 +62,15 @@ void game_win (void)
       terminal_sleep (0, WAIT_PILOT);
            
       ansi_Position (44, 19);
-      printf ("\\O/");
+      ansi_printf ("\\O/");
       ansi_Position (44, 20);
-      printf (" | ");
+      ansi_printf (" | ");
 
       terminal_sleep (0, WAIT_PILOT);
       ansi_Position (44, 19);
-      printf (" O ");
+      ansi_printf (" O ");
       ansi_Position (44, 20);
-      printf ("/|\\");
+      ansi_printf ("/|\\");
     }
 
   /* Helicopter lowers rope */
@@ -79,7 +79,7 @@ void game_win (void)
     {
       terminal_sleep (0, WAIT_PILOT);
       ansi_Position (40, y);
-      putchar ('|');
+      ansi_putchar ('|');
     }
 
 /* Pilot now moves under the rope */
