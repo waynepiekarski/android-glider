@@ -40,8 +40,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public int mCharHeight;
         public int mCharWidthOffset;
         public int mCharHeightOffset;
-        public static final int mCharSpacingX = 2;
-        public static final int mCharSpacingY = 10;
         public static final int mTerminalWidth = 80;
         public static final int mTerminalHeight = 25;
         public static final int mDefaultForeground = Color.WHITE;
@@ -87,15 +85,18 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 if (fontSize >= 1000)
                     Logging.fatal("Unable to find suitable font size to fill canvas");
                 mPaintText.setTextSize(fontSize);
-                Rect rect = new Rect();
-                mPaintText.getTextBounds("X", 0, 1, rect); // How big is "X" when drawn
-                if ((rect.width() == 0) || (rect.height() == 0))
-                    Logging.fatal("Invalid width or height from getTextBounds");
+
+                Paint.FontMetricsInt metrics = mPaintText.getFontMetricsInt();
+                Rect rectW = new Rect();
+                mPaintText.getTextBounds("X", 0, 1, rectW); // How big is "X" horizontally when drawn
+                if (rectW.width() == 0)
+                    Logging.fatal("Invalid width from getTextBounds");
                 lastWidth = mCharWidth;
                 lastHeight = mCharHeight;
-                mCharWidth = rect.width() + mCharSpacingX;
-                mCharHeight = rect.height() + mCharSpacingY;
+                mCharWidth = rectW.width();
+                mCharHeight = metrics.bottom - metrics.top;
                 Logging.debug("Calculated for size=" + fontSize + " bounds=" + mCharWidth + "x" + mCharHeight + " for total=" + (mCharWidth*terminalWidth) + "x" + (mCharHeight*terminalHeight) + " canvas=" + mCanvasWidth + "x" + mCanvasHeight);
+                Logging.debug("Font width=" + rectW.width() + " top=" + metrics.top + " bottom=" + metrics.bottom + " descent=" + metrics.descent);
                 if ((mCharWidth * terminalWidth > mCanvasWidth) || (mCharHeight * terminalHeight > mCanvasHeight)) {
                     // This font size is too big, we need to go back one step and finish
                     fontSize--;
@@ -114,9 +115,10 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         }
 
         public void clearFixedChar(Canvas canvas, int row, int col) {
+            Paint.FontMetricsInt metrics = mPaintText.getFontMetricsInt();
             int x = mCharWidthOffset + (col-1) * mCharWidth;
             int y = mCharHeightOffset + row * mCharHeight;
-            canvas.drawRect(x, y - mCharHeight + mCharSpacingY - mCharSpacingY/2, x + mCharWidth, y + mCharSpacingY/2, mPaintBackground);
+            canvas.drawRect(x, y + metrics.top, x + mCharWidth+1, y + metrics.bottom, mPaintBackground);
         }
 
         public void clearFixedString(Canvas canvas, String str, int row, int col, int border) {
