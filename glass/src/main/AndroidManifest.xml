@@ -12,6 +12,9 @@
             android:icon="@drawable/ic_glass_logo"
             android:label="@string/title_activity_main" >
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
             </intent-filter>
 
