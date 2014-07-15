@@ -35,7 +35,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public Paint mPaintBackground;
         public int mCanvasWidth;
         public int mCanvasHeight;
-        public boolean mCanvasDirty;
         public int mCharWidth;
         public int mCharHeight;
         public int mCharWidthOffset;
@@ -60,7 +59,10 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             mPaintBackground = new Paint();
             mPaintBackground.setColor(mDefaultBackground);
 
-            mCanvasDirty = true;
+            mBackingStore = new BackingStore[mTerminalHeight][mTerminalWidth];
+            for (int row = 0; row < mTerminalHeight; row++)
+                for (int col = 0; col < mTerminalWidth; col++)
+                    mBackingStore[row][col] = new BackingStore();
         }
 
         public void submitAnsiBuffer(int len, byte[] buffer) {
@@ -70,6 +72,16 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 byte[] copy = Arrays.copyOfRange(buffer, 0, len);
                 Logging.debug("Storing ANSI buffer with " + copy.length + " to the processing queue");
                 ansiBuffer.put(copy);
+            } catch (InterruptedException e) {
+                Logging.fatal("Failed to put into ANSI buffer with InterruptedException " + e);
+            }
+        }
+
+        public void triggerAnsiRefresh() {
+            // Used to trigger the ANSI parser for a refresh but do not do anything
+            try {
+                byte[] b = new byte[0];
+                ansiBuffer.put(b);
             } catch (InterruptedException e) {
                 Logging.fatal("Failed to put into ANSI buffer with InterruptedException " + e);
             }
@@ -114,6 +126,40 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             }
         }
 
+        class BackingStore {
+            byte ch;
+            int fg;
+            int bg;
+            void BackingStore() { reset(mDefaultForeground, mDefaultBackground); }
+            void reset(int f, int b) { ch = '~'; fg = f; bg = b; }
+        }
+        BackingStore[][] mBackingStore;
+
+        public void refreshBackingStore (Canvas canvas) {
+            // The bitmap was destroyed and needs to have the backing store redrawn
+            Paint.FontMetricsInt metrics = mPaintText.getFontMetricsInt();
+            // Create local paint objects and copy over things like font settings, although
+            // we will set the color in the loop below for each character
+            Paint foreground = new Paint();
+            foreground.set(mPaintText);
+            Paint background = new Paint();
+            background.set(mPaintBackground);
+            for (int row = 0; row < mTerminalHeight; row++)
+                for (int col = 0; col < mTerminalWidth; col++) {
+                    // Note the array is zero based, so code is different than drawFixedChar
+                    BackingStore element = mBackingStore[row][col];
+
+                    int x = mCharWidthOffset + col * mCharWidth;
+                    int y = mCharHeightOffset + (row+1) * mCharHeight;
+                    // Clear the box with the current background attributes
+                    foreground.setColor(element.fg);
+                    background.setColor(element.bg);
+                    canvas.drawRect(x, y + metrics.top, x + mCharWidth + 1, y + metrics.bottom, background);
+                    // Draw the text over the top with the foreground attributes
+                    canvas.drawText(String.valueOf((char) (element.ch & 0xFF)), x, y, foreground);
+                }
+        }
+
         public void drawFixedChar (Canvas canvas, byte b, int row, int col) {
             Paint.FontMetricsInt metrics = mPaintText.getFontMetricsInt();
             int x = mCharWidthOffset + (col-1) * mCharWidth;
@@ -122,18 +168,21 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             canvas.drawRect(x, y + metrics.top, x + mCharWidth+1, y + metrics.bottom, mPaintBackground);
             // Draw the text over the top with the foreground attributes
             canvas.drawText(String.valueOf((char) (b & 0xFF)), x, y, mPaintText);
+            // Update the backing store (note the array indexes start at zero)
+            mBackingStore[row-1][col-1].ch = b;
+            mBackingStore[row-1][col-1].fg = mPaintText.getColor();
+            mBackingStore[row-1][col-1].bg = mPaintBackground.getColor();
             // Logging.debug ("Drawing " + String.valueOf((char)(b&0xFF)) + " at RC" + row + "," + col + " at XY" + x + "," + y + " with OFS" + mCharWidthOffset + "," + mCharHeightOffset);
         }
 
         public void drawClear(Canvas canvas) {
+            for (int row = 0; row < mTerminalHeight; row++)
+                for (int col = 0; col < mTerminalWidth; col++)
+                    mBackingStore[row][col].reset(mDefaultBackground, mDefaultBackground);
             canvas.drawColor(mDefaultBackground);
         }
 
         public void doDraw(Canvas canvas, byte[] buffer) {
-            if (mCanvasDirty) {
-                mCanvasDirty = false;
-                recalculateFontSize(canvas, mTerminalWidth, mTerminalHeight);
-            }
             Logging.debug("Received ANSI buffer with " + buffer.length + " bytes from native code");
             drawAnsiBuffer(canvas, buffer);
         }
@@ -141,11 +190,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         int tempR = 1;
         int tempC = 1;
         public void doDrawDebug(Canvas canvas) {
-            if (mCanvasDirty) {
-                mCanvasDirty = false;
-                recalculateFontSize(canvas, mTerminalWidth, mTerminalHeight);
-            }
-
             StringBuilder ansiTest = new StringBuilder();
             ansiTest.append(AnsiString.defaultAttr());
             ansiTest.append(AnsiString.clearScreen());
@@ -233,13 +277,21 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
         public void setSurfaceSize(int width, int height) {
             synchronized (mSurfaceHolder) {
-                // Change bitmap attributes atomically
+                // Resize the internal bitmap to match the new display dimensions
                 mCanvasWidth = width;
                 mCanvasHeight = height;
-                mCanvasDirty = true;
                 mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 mCanvas = new Canvas (mBitmap);
                 Logging.debug("Detected change in surface size to " + width + "x" + height);
+
+                // Recalculate the font size which fits into the display
+                recalculateFontSize(mCanvas, mTerminalWidth, mTerminalHeight);
+
+                // Replay the backing store into the new resized canvas
+                refreshBackingStore(mCanvas);
+
+                // Trigger off the onDraw() method by generating an empty ANSI sequence
+                triggerAnsiRefresh();
             }
         }
 
@@ -406,9 +458,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
 
-        // Drawing is done on a separate thread, so create it here but wait until surfaceCreated()
-        // before we actually start the drawing
-        Logging.debug("Starting thread for RenderThread");
+        // Create the object to manage drawing, but do not start it here, or we can get into
+        // a race condition where the internal bitmap is not ready. Wait until surfaceChanged().
         mRenderThread = new RenderThread(holder, context);
 
         // Get key events
@@ -417,10 +468,15 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Logging.debug("surfaceChanged");
+        // Resize the internal bitmap to match the size of the surface we have been given
         mRenderThread.setSurfaceSize(width, height);
 
         // Create thread to run our native code implementation
         if (mNativeThread == null) {
+            // Start the rendering thread that will manage the surface interactions
+            mRenderThread.start();
+
+            // Start the native code, which generates the ANSI strings and reads inputs
             Logging.debug("Starting thread for nativeAnsiCode");
             mNativeThread = new Thread(new Runnable() {
                 public void run() {
@@ -434,14 +490,14 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        // Start the thread here so that we know the surface is ready before we start drawing
+        // Do nothing in here, we don't know the dimensions yet, so lets wait for surfaceChanged
+        // so that we know everything is ready and the bitmap is created properly
         Logging.debug("surfaceCreated");
-        mRenderThread.start();
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         Logging.debug("surfaceDestroyed");
-        Logging.fatal("surfaceDestroyed not implemented yet");
+        Logging.fatal("surfaceDestroyed not implemented yet, causing an exit to shut everything down");
         // TODO: Stop the rendering thread
     }
 
