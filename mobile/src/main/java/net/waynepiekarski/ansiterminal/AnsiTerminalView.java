@@ -114,78 +114,15 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             }
         }
 
-        public void clearFixedChar(Canvas canvas, int row, int col) {
+        public void drawFixedChar (Canvas canvas, byte b, int row, int col) {
             Paint.FontMetricsInt metrics = mPaintText.getFontMetricsInt();
             int x = mCharWidthOffset + (col-1) * mCharWidth;
             int y = mCharHeightOffset + row * mCharHeight;
+            // Clear the box with the current background attributes
             canvas.drawRect(x, y + metrics.top, x + mCharWidth+1, y + metrics.bottom, mPaintBackground);
-        }
-
-        public void clearFixedString(Canvas canvas, String str, int row, int col, int border) {
-            int clen = border*2 + str.length();
-            int rlen = border*2 + 1;
-            for (int c = 1; c <= clen; c++)
-                for (int r = 1; r <= rlen; r++)
-                    clearFixedChar(canvas, row+r-border, col+c-border);
-        }
-
-        public StringBuilder ansiClearFixedString(String str, int row, int col, int border) {
-            StringBuilder result = new StringBuilder();
-            int clen = border*2 + str.length();
-            int rlen = border*2 + 1;
-            for (int c = 0; c < clen; c++)
-                for (int r = 0; r < rlen; r++)
-                    // Make sure we never generate a negative coordinate, but overflow is good
-                    if ((col+c-border >= 1) && (row+r-border >= 1))
-                        result.append(AnsiString.putChar(row+r-border, col+c-border, ' '));
-            return result;
-        }
-
-        public void drawFixedChar (Canvas canvas, char ch, int row, int col) {
-            int x = mCharWidthOffset + (col-1) * mCharWidth;
-            int y = mCharHeightOffset + row * mCharHeight;
-            canvas.drawText(String.valueOf(ch), x, y, mPaintText);
-        }
-
-        public void drawFixedChar (Canvas canvas, byte b, int row, int col) {
-            int x = mCharWidthOffset + (col-1) * mCharWidth;
-            int y = mCharHeightOffset + row * mCharHeight;
+            // Draw the text over the top with the foreground attributes
             canvas.drawText(String.valueOf((char) (b & 0xFF)), x, y, mPaintText);
             // Logging.debug ("Drawing " + String.valueOf((char)(b&0xFF)) + " at RC" + row + "," + col + " at XY" + x + "," + y + " with OFS" + mCharWidthOffset + "," + mCharHeightOffset);
-        }
-
-        public void drawFixedString(Canvas canvas, String str, int row, int col) {
-            int c = col;
-            for (char ch : str.toCharArray()) {
-                drawFixedChar(canvas, ch, row, c);
-                c++;
-            }
-        }
-
-        public void drawDebug(Canvas canvas, int width, int height) {
-            for (int c = 1; c <= width; c++) {
-                for (int r = 1; r <= height; r++) {
-                    if ((c == 1) || (c == width) || (r == 1) || (r == height))
-                        drawFixedChar(canvas, '#', r, c);
-                    else {
-                        drawFixedChar(canvas, Character.forDigit(c % 10, 10), r, c);
-                    }
-                }
-            }
-        }
-
-        public StringBuilder ansiDrawDebug(int width, int height) {
-            StringBuilder result = new StringBuilder();
-            for (int c = 1; c <= width; c++) {
-                for (int r = 1; r <= height; r++) {
-                    if ((c == 1) || (c == width) || (r == 1) || (r == height))
-                        result.append(AnsiString.putChar(r, c, '#'));
-                    else {
-                        result.append(AnsiString.putChar(r, c, Character.forDigit(c % 10, 10)));
-                    }
-                }
-            }
-            return result;
         }
 
         public void drawClear(Canvas canvas) {
@@ -214,7 +151,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             ansiTest.append(AnsiString.clearScreen());
 
             // Debug the full layout of the display
-            ansiTest.append(ansiDrawDebug(mTerminalWidth, mTerminalHeight));
+            ansiTest.append(AnsiString.putDebugGrid(mTerminalWidth, mTerminalHeight));
             ansiTest.append(AnsiString.putString(2, 1, " "));
             ansiTest.append(AnsiString.putString(1, 2, " "));
             ansiTest.append(AnsiString.putString(mTerminalHeight, mTerminalWidth-1, " "));
@@ -251,13 +188,11 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
             ansiTest.append(AnsiString.setBackground(AnsiString.GREEN));
             ansiTest.append(AnsiString.setForeground(AnsiString.RED));
-            ansiTest.append(ansiClearFixedString("Clear box should not wrap-around", 10, 75, 1));
-            ansiTest.append(AnsiString.putString(10, 75, "Clear box should not wrap-around"));
+            ansiTest.append(AnsiString.putFramedString(10, 75, "Clear box should not wrap-around", 1));
 
             // Animated text with clear box to show things are updating
             ansiTest.append(AnsiString.defaultAttr());
-            ansiTest.append(ansiClearFixedString("R=" + tempR + ",C=" + tempC, tempR, tempC, 1));
-            ansiTest.append(AnsiString.putString(tempR, tempC, "R="+tempR+",C="+tempC));
+            ansiTest.append(AnsiString.putFramedString(tempR, tempC, "R=" + tempR + ",C=" + tempC, 1));
             tempR += 1;
             if (tempR > 25) tempR = 1;
             tempC += 1;
@@ -328,14 +263,11 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
             public byte getByte()
             {
-                if (ofs < mBytes.length)
-                {
+                if (ofs < mBytes.length) {
                     byte result = mBytes[ofs];
                     ofs++;
                     return result;
-                }
-                else
-                {
+                } else {
                     return End;
                 }
             }
@@ -447,7 +379,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     mCursorRow++;
                 } else {
                     // Regular character, just print it out using the current paint attributes
-                    clearFixedChar(canvas, mCursorRow, mCursorCol);
                     drawFixedChar(canvas, current, mCursorRow, mCursorCol);
 
                     // Move the cursor to the next spot

@@ -53,4 +53,31 @@ public class AnsiString {
     public static String setColor(int attr, int fg, int bg) {
         return setAttr(attr) + setForeground(fg) + setBackground(bg);
     }
+
+    public static String putFramedString(int row, int col, String str, int border) {
+        StringBuilder result = new StringBuilder();
+        int clen = border*2 + str.length();
+        int rlen = border*2 + 1;
+        for (int c = 0; c < clen; c++)
+            for (int r = 0; r < rlen; r++)
+                // Make sure we never generate a negative coordinate, but overflow is good
+                if ((col+c-border >= 1) && (row+r-border >= 1))
+                    result.append(putChar(row+r-border, col+c-border, ' '));
+        result.append(putString(row, col, str));
+        return result.toString();
+    }
+
+    public static String putDebugGrid(int width, int height) {
+        StringBuilder result = new StringBuilder();
+        for (int c = 1; c <= width; c++) {
+            for (int r = 1; r <= height; r++) {
+                if ((c == 1) || (c == width) || (r == 1) || (r == height))
+                    result.append(putChar(r, c, '#'));
+                else {
+                    result.append(putChar(r, c, Character.forDigit(c % 10, 10)));
+                }
+            }
+        }
+        return result.toString();
+    }
 }
