@@ -448,6 +448,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         }
 
         public int getCanvasWidth() { return mCanvasWidth; }
+        public int getCanvasHeight() { return mCanvasHeight; }
     }
 
 
@@ -506,14 +507,22 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            // This is a touch event, so lets decide what to do with it
-            int width = mRenderThread.getCanvasWidth() / 2;
+            // This is a touch event, so lets decide what to do with it. The 25% edges are defined
+            // to map to the numeric keypad 4,8,6,2 keys, and the center maps to the space bar.
+            int width = mRenderThread.getCanvasWidth();
+            int height = mRenderThread.getCanvasHeight();
             byte result = 0;
-            if (ev.getX() < width)
-                result = '<';
-            else if (ev.getX() >= width)
-                result = '>';
-            Logging.debug ("Generating keystroke '" + String.valueOf((char)(result & 0xFF)) + "' from " + ev.toString());
+            if ((ev.getX() < width*1/4) && (ev.getY() > height*1/4) && (ev.getY() < height*3/4))
+                result = '4'; // Left
+            else if ((ev.getX() > width*3/4) && (ev.getY() > height*1/4) && (ev.getY() < height*3/4))
+                result = '6'; // Right
+            else if ((ev.getY() < height*1/4) && (ev.getX() > width*1/4) && (ev.getX() < width*3/4))
+                result = '8'; // Up
+            else if ((ev.getY() > height*3/4) && (ev.getX() > width*1/4) && (ev.getX() < width*3/4))
+                result = '2'; // Down
+            else
+                result = ' '; // Middle
+            Logging.debug ("Generating keystroke '" + String.valueOf((char)(result & 0xFF)) + "' from W,H=" + width + "," + height + " " + ev.toString());
             keyBuffer.clear();
             try {
                 keyBuffer.put(result);
