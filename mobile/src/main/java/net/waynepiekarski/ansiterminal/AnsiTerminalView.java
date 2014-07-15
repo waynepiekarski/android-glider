@@ -433,6 +433,10 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                         // Invalid ANSI, throw an exception
                         Logging.fatal("Found start ESC but found " + current + " instead of left bracket");
                     }
+                } else if (current == '\n') {
+                    // Carriage return, so go to the next line
+                    mCursorCol = 0;
+                    mCursorRow++;
                 } else {
                     // Regular character, just print it out using the current paint attributes
                     clearFixedChar(canvas, mCursorRow, mCursorCol);
