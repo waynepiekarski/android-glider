@@ -44,8 +44,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public static final int mTerminalHeight = 25;
         public static final int mDefaultForeground = Color.WHITE;
         public static final int mDefaultBackground = Color.BLACK;
-        public int mCursorRow = 0;
-        public int mCursorCol = 0;
+        public int mCursorRow = 1;
+        public int mCursorCol = 1;
         public boolean mCursorReverse = false;
         private LinkedBlockingQueue<byte[]> ansiBuffer = new LinkedBlockingQueue<byte[]>();
 
@@ -375,7 +375,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     }
                 } else if (current == '\n') {
                     // Carriage return, so go to the next line
-                    mCursorCol = 0;
+                    mCursorCol = 1;
                     mCursorRow++;
                 } else {
                     // Regular character, just print it out using the current paint attributes
@@ -384,7 +384,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     // Move the cursor to the next spot
                     mCursorCol++;
                     if (mCursorCol >= mTerminalWidth) {
-                        mCursorCol = 0;
+                        mCursorCol = 1;
                         mCursorRow++;
                     }
                 }
