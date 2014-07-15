@@ -497,8 +497,11 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         Logging.debug("surfaceDestroyed");
-        Logging.fatal("surfaceDestroyed not implemented yet, causing an exit to shut everything down");
-        // TODO: Stop the rendering thread
+        // Officially, we should notify both render and native threads that we are done, they should
+        // finish their work and exit, then we should wait here for them to finish. However, surfaceDestroyed
+        // is called when the Activity is being hidden, so we might as well just exit and be done with it.
+        Logging.debug("surfaceDestroyed not implemented yet, causing a clean exit to shut everything down");
+        System.exit(0);
     }
 
     public void submitAnsiBuffer(int len, byte[] buffer) {
