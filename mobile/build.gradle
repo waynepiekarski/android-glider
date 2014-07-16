@@ -23,6 +23,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            java {
+                srcDir 'java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear.java'
+            }
+        }
+    }
 
     buildTypes.debug.jniDebugBuild true
 

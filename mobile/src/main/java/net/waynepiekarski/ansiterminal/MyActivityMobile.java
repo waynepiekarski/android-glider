@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-public class MyActivity extends ActionBarActivity {
+public class MyActivityMobile extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
