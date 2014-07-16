@@ -22,7 +22,7 @@ import android.widget.AdapterView;
  * and use a {@link com.google.android.glass.touchpad.GestureDetector}.
  * @see <a href="https://developers.google.com/glass/develop/gdk/touch">GDK Developer Guide</a>
  */
-public class MainActivity extends Activity {
+public class MyActivityGlass extends Activity {
 
     /** {@link CardScrollView} to use as the main content view. */
     private CardScrollView mCardScroller;
@@ -34,7 +34,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        mView = buildView();
+        // Create the Glider game object here
+        mView = new AnsiTerminalView(this);
 
         mCardScroller = new CardScrollView(this);
         mCardScroller.setAdapter(new CardScrollAdapter() {
@@ -84,15 +85,4 @@ public class MainActivity extends Activity {
         mCardScroller.deactivate();
         super.onPause();
     }
-
-    /**
-     * Builds a Glass styled "Hello World!" view using the {@link Card} class.
-     */
-    private View buildView() {
-        Card card = new Card(this);
-
-        card.setText(R.string.hello_world);
-        return card.getView();
-    }
-
 }

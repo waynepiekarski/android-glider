@@ -27,6 +27,8 @@ android {
         main {
             java {
                 srcDir 'java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityGlass.java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityTV.java'
                 exclude 'net/waynepiekarski/ansiterminal/MyActivityWear.java'
             }
         }
