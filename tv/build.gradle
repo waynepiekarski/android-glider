@@ -11,12 +11,72 @@ android {
         targetSdkVersion 'L'
         versionCode 1
         versionName "1.0"
+        ndk {
+            moduleName "native-jni"
+            ldLibs "log"
+            stl "stlport_static"
+        }
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    sourceSets {
+        main {
+            java {
+                // The gradle docs try to indicate this should have [ ] around srcDirs but you
+                // actually should leave them out to make it not give an error. Also, you cannot
+                // use relative paths here, so src/main/ansijava is a symlink to work around this.
+                srcDirs 'src/main/java','src/main/ansijava'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityGlass.java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityMobile.java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear.java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityTV.java'
+            }
+        }
+    }
+
+    buildTypes.debug.jniDebugBuild true
+
+    productFlavors {
+        x86 {
+            ndk {
+                abiFilter "x86"
+            }
+
+            // this is the flavor part of the version code.
+            // It must be higher than the arm one for devices supporting
+            // both, as x86 is preferred.
+            versionCode = 3
+        }
+        arm {
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+            versionCode = 2
+        }
+        mips {
+            ndk {
+                abiFilter "mips"
+            }
+            versionCode = 1
+        }
+        fat {
+            // fat binary, lowest version code to be
+            // the last option
+            versionCode = 0
+        }
+    }
+
+    // make per-variant version code
+    applicationVariants.all { variant ->
+        // get the single flavor
+        def flavorVersion = variant.productFlavors.get(0).versionCode
+
+        // set the composite code
+        variant.mergedFlavor.versionCode = flavorVersion * 1000000 + defaultConfig.versionCode
     }
 }
 
