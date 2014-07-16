@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -511,6 +512,47 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
     // Single element queue to store the last character in the virtual keyboard
     private LinkedBlockingQueue<Byte> keyBuffer = new LinkedBlockingQueue<Byte>();
+
+    // Handle gamepad devices and the D-pad
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent ev) {
+        byte result = 0;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                result = '4';
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                result = '6';
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                result = '8';
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                result = '2';
+                break;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+            case KeyEvent.KEYCODE_BUTTON_A:
+            case KeyEvent.KEYCODE_BUTTON_B:
+            case KeyEvent.KEYCODE_BUTTON_C:
+                result = '\n';
+                break; // Enter key for buttons
+            case KeyEvent.KEYCODE_BACK:
+            case KeyEvent.KEYCODE_HOME:
+                System.exit(0); // Exit out of the game
+        }
+        if (result == 0) {
+            Logging.debug ("Ignoring onKeyDown event for unknown keyCode " + keyCode);
+        } else {
+            Logging.debug ("Generating keystroke '" + String.valueOf((char)(result & 0xFF)) + "' from " + ev.toString());
+            keyBuffer.clear();
+            try {
+                keyBuffer.put(result);
+            } catch (InterruptedException e) {
+                Logging.fatal ("Failed to store keystroke from " + e);
+            }
+        }
+        return true; // We processed this event
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
