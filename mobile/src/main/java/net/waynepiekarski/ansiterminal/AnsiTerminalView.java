@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -25,6 +26,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
     // Thread object that runs the native C code, started after the SurfaceView is visible
     Thread mNativeThread = null;
+
+    // Gesture detector
+    private GestureDetector mGestureDetector;
 
     class RenderThread extends Thread {
         public SurfaceHolder mSurfaceHolder;
@@ -513,6 +517,17 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
     // Single element queue to store the last character in the virtual keyboard
     private LinkedBlockingQueue<Byte> keyBuffer = new LinkedBlockingQueue<Byte>();
 
+    // Method to inject keyboard events into the queue
+    public void injectKeyboardEvent (byte key) {
+        Logging.debug ("Generating keystroke '" + String.valueOf((char)(key & 0xFF)));
+        keyBuffer.clear();
+        try {
+            keyBuffer.put(key);
+        } catch (InterruptedException e) {
+            Logging.fatal ("Failed to store keystroke from " + e);
+        }
+    }
+
     // Handle gamepad devices and the D-pad
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent ev) {
@@ -543,13 +558,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         if (result == 0) {
             Logging.debug ("Ignoring onKeyDown event for unknown keyCode " + keyCode);
         } else {
-            Logging.debug ("Generating keystroke '" + String.valueOf((char)(result & 0xFF)) + "' from " + ev.toString());
-            keyBuffer.clear();
-            try {
-                keyBuffer.put(result);
-            } catch (InterruptedException e) {
-                Logging.fatal ("Failed to store keystroke from " + e);
-            }
+            injectKeyboardEvent(result);
         }
         return true; // We processed this event
     }
@@ -572,13 +581,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 result = '2'; // Down
             else
                 result = '\n'; // Middle is enter key
-            Logging.debug ("Generating keystroke '" + String.valueOf((char)(result & 0xFF)) + "' from W,H=" + width + "," + height + " " + ev.toString());
-            keyBuffer.clear();
-            try {
-                keyBuffer.put(result);
-            } catch (InterruptedException e) {
-                Logging.fatal ("Failed to store keystroke from " + e);
-            }
+            injectKeyboardEvent(result);
         }
         return true; // We processed this event
     }
