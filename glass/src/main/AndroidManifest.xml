@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MyActivityGlass"
-            android:icon="@drawable/ic_glass_logo"
+            android:icon="@drawable/ic_launcher_papercraft"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

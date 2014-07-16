@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Glider</string>
-    <string name="title_activity_main">Hello World Immersion</string>
+    <string name="title_activity_main">Glider</string>
     <string name="hello_world">Hello world!</string>
 
 </resources>
