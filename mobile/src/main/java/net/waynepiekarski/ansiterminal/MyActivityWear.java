@@ -2,6 +2,7 @@ package net.waynepiekarski.ansiterminal;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.wearable.view.BoxInsetLayout;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
