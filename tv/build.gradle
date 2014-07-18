@@ -32,7 +32,7 @@ android {
                 srcDirs 'src/main/java','src/main/ansijava'
                 exclude 'net/waynepiekarski/ansiterminal/MyActivityGlass.java'
                 exclude 'net/waynepiekarski/ansiterminal/MyActivityMobile.java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear.java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear*.java'
                 exclude 'net/waynepiekarski/ansiterminal/MyActivityTV.java'
             }
         }

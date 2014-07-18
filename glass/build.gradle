@@ -35,7 +35,7 @@ android {
                 srcDir 'java'
                 exclude 'net/waynepiekarski/ansiterminal/MyActivityMobile.java'
                 exclude 'net/waynepiekarski/ansiterminal/MyActivityTV.java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear.java'
+                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear*.java'
             }
         }
     }
