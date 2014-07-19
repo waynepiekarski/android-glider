@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.wearable.view.BoxInsetLayout;
 import android.support.wearable.view.WatchViewStub;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,9 @@ public class MyActivityWear extends Activity {
 
                 mAccelView = new MyAccelView(MyActivityWear.this);
                 rel.addView(mAccelView);
+
+                // Prevent display from sleeping
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
         });
 
