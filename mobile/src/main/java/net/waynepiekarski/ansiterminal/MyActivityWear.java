@@ -59,27 +59,28 @@ public class MyActivityWear extends Activity {
 
                 // Prevent display from sleeping
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+                // Register for sensor updates now that the UI is created
+                SensorManager sm = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+                int sensorType = Sensor.TYPE_ACCELEROMETER;
+                sm.registerListener(new SensorEventListener() {
+                    public void onSensorChanged(SensorEvent sensorEvent) {
+                        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                            double xAccel = sensorEvent.values[0] / -10.0; // 9.8 m/s^2 is the maximum value
+                            mAccelView.setValue(xAccel);
+
+                            // Send keyboard events if the tilt is greater than a threshold
+                            if (xAccel < -mAccelView.mThreshold)
+                                mAnsiTerminalView.injectKeyboardEvent((byte)'4');
+                            else if (xAccel > mAccelView.mThreshold)
+                                mAnsiTerminalView.injectKeyboardEvent((byte)'6');
+                        }
+                    }
+                    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                        // Not needed
+                    }
+                }, sm.getDefaultSensor(sensorType), SensorManager.SENSOR_DELAY_NORMAL);
             }
         });
-
-        SensorManager sm = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-        int sensorType = Sensor.TYPE_ACCELEROMETER;
-        sm.registerListener(new SensorEventListener() {
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    double xAccel = sensorEvent.values[0] / -10.0; // 9.8 m/s^2 is the maximum value
-                    mAccelView.setValue(xAccel);
-
-                    // Send keyboard events if the tilt is greater than a threshold
-                    if (xAccel < -mAccelView.mThreshold)
-                        mAnsiTerminalView.injectKeyboardEvent((byte)'4');
-                    else if (xAccel > mAccelView.mThreshold)
-                        mAnsiTerminalView.injectKeyboardEvent((byte)'6');
-                }
-            }
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                // Not needed
-            }
-        }, sm.getDefaultSensor(sensorType), SensorManager.SENSOR_DELAY_NORMAL);
     }
 }
