@@ -219,6 +219,12 @@ int get_arrow (int enable_arrows, struct get_arrow_keys *set1, struct get_arrow_
   }
 }
 
+void terminal_sleep (int seconds, int microseconds)
+{
+  ansi_fflush (); /* Make sure all output gets sent to the screen before we sleep */
+  usleep (seconds * 1000000 + microseconds);
+}
+
 int delay_for_key (int seconds, int microseconds)
 {
   // Update terminal with any output before we go to sleep
@@ -230,12 +236,6 @@ int delay_for_key (int seconds, int microseconds)
 
   // Are there any keys available?
   return java_timeUntilKeypress(0);
-}
-
-void terminal_sleep (int seconds, int microseconds)
-{
-  ansi_fflush (); /* Make sure all output gets sent to the screen before we sleep */
-  usleep (seconds * 1000000 + microseconds);
 }
 
 char terminal_getchar (void)
