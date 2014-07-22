@@ -33,11 +33,9 @@ import android.support.wearable.view.BoxInsetLayout;
 import android.support.wearable.view.WatchViewStub;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class MyActivityWear extends Activity {
 
-    private TextView mTextView;
     private MyAccelView mAccelView;
     private AnsiTerminalView mAnsiTerminalView;
 
@@ -50,8 +48,6 @@ public class MyActivityWear extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
-
                 // Grab the layout object to embed later things in code
                 RelativeLayout rel = (RelativeLayout)findViewById(R.id.top_layout);
 
