@@ -9,9 +9,13 @@
     tools:context=".MyActivity"
     tools:deviceIds="wear_round">
 
+    <!-- Note that we need to use app:layout_box="all" here in the child object
+         for the BoxInsetLayout to be applied correctly. By default, BoxInsetLayout
+         does nothing unless you add app:layout_box -->
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/top_layout">
+                    android:id="@+id/top_layout"
+                    app:layout_box="all">
 
     </RelativeLayout>
 
