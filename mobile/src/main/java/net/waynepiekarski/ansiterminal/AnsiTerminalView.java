@@ -57,6 +57,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public Context mContext;
         public boolean mRunning = true;
         public Canvas mCanvas;
+        public boolean mCanvasRound = false;
         public Bitmap mBitmap;
         public Paint mPaintText;
         public Paint mPaintBackground;
@@ -136,7 +137,25 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 mCharHeight = metrics.bottom - metrics.top;
                 Logging.debug("Calculated for size=" + fontSize + " bounds=" + mCharWidth + "x" + mCharHeight + " for total=" + (mCharWidth*terminalWidth) + "x" + (mCharHeight*terminalHeight) + " canvas=" + mCanvasWidth + "x" + mCanvasHeight);
                 Logging.debug("Font width=" + rectW.width() + " top=" + metrics.top + " bottom=" + metrics.bottom + " descent=" + metrics.descent);
-                if ((mCharWidth * terminalWidth > mCanvasWidth) || (mCharHeight * terminalHeight > mCanvasHeight)) {
+                boolean done = false;
+
+                if (mCanvasRound) {
+                    // We have a round watch, so the goal is to try and fit the rectangle to the radius of the circle
+                    double x = mCharWidth*terminalWidth / 2.0;
+                    double y = mCharHeight*terminalHeight / 2.0;
+                    // Use ellipse formula (x/rw)^2+(y/rh)^2 to see if we are inside the circle still
+                    double xrw = x / (mCanvasWidth / 2.0);
+                    double yrw = y / (mCanvasHeight / 2.0);
+                    if (xrw*xrw + yrw*yrw > 1.0)
+                        done = true;
+                } else {
+                    // Regular device, so just make sure we don't exceed the rectangle that we have
+                    if ((mCharWidth * terminalWidth > mCanvasWidth) || (mCharHeight * terminalHeight > mCanvasHeight)) {
+                        done = true;
+                    }
+                }
+
+                if (done) {
                     // This font size is too big, we need to go back one step and finish
                     fontSize--;
                     mCharWidth = lastWidth;
@@ -299,6 +318,12 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                         mSurfaceHolder.unlockCanvasAndPost(c);
                     }
                 }
+            }
+        }
+
+        public void setSurfaceRound(boolean round) {
+            synchronized (mSurfaceHolder) {
+                mCanvasRound = round;
             }
         }
 
@@ -491,6 +516,10 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
         // Get key events
         setFocusable(true);
+    }
+
+    public void surfaceRound(boolean round) {
+        mRenderThread.setSurfaceRound(round);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {

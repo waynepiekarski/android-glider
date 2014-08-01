@@ -8,4 +8,11 @@
     tools:deviceIds="wear_square"
     android:id="@+id/top_layout">
 
+    <!-- Container to store the accelerometer view -->
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/accel_layout">
+
+    </RelativeLayout>
+
 </RelativeLayout>

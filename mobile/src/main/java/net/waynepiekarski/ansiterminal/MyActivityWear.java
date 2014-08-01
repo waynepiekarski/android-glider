@@ -31,6 +31,8 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.wearable.view.BoxInsetLayout;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
@@ -45,6 +47,14 @@ public class MyActivityWear extends Activity {
         setContentView(R.layout.activity_my);
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        stub.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                mAnsiTerminalView.surfaceRound(windowInsets.isRound());
+                return windowInsets;
+            }
+        });
+
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
@@ -55,7 +65,8 @@ public class MyActivityWear extends Activity {
                 rel.addView(mAnsiTerminalView);
 
                 mAccelView = new MyAccelView(MyActivityWear.this);
-                rel.addView(mAccelView);
+                RelativeLayout accel_rel = (RelativeLayout)findViewById(R.id.accel_layout);
+                accel_rel.addView(mAccelView);
 
                 // Prevent display from sleeping
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

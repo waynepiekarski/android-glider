@@ -9,13 +9,22 @@
     tools:context=".MyActivity"
     tools:deviceIds="wear_round">
 
-    <!-- Note that we need to use app:layout_box="all" here in the child object
-         for the BoxInsetLayout to be applied correctly. By default, BoxInsetLayout
-         does nothing unless you add app:layout_box -->
+    <!-- Note that we need to use app:layout_box="all" if we want BoxInsetLayout to
+         fit the child view within a square fitting on the round display. BoxInsetLayout
+         does nothing unless you add app:layout_box. Note that the accelerometer view
+         gets put inside the box, while the main game runs on the whole display so I
+         can control it directly -->
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/accel_layout"
+                    app:layout_box="all">
+
+    </RelativeLayout>
+
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/top_layout"
-                    app:layout_box="all">
+                    app:layout_box="">
 
     </RelativeLayout>
 
