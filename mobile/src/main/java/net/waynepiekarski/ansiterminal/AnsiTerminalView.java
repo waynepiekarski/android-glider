@@ -58,8 +58,10 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public boolean mRunning = true;
         public Canvas mCanvas;
         public Bitmap mBitmap;
+        public int mBitmapScaling = 3; // Render at higher resolution and then downsample
         public Paint mPaintText;
         public Paint mPaintBackground;
+        public Paint mPaintBitmap;
         public int mCanvasWidth;
         public int mCanvasHeight;
         public int mCharWidth;
@@ -85,6 +87,11 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
             mPaintBackground = new Paint();
             mPaintBackground.setColor(mDefaultBackground);
+
+            mPaintBitmap = new Paint();
+            mPaintBitmap.setAntiAlias(true);
+            mPaintBitmap.setFilterBitmap(true);
+            mPaintBitmap.setDither(false);
 
             mBackingStore = new BackingStore[mTerminalHeight][mTerminalWidth];
             for (int row = 0; row < mTerminalHeight; row++)
@@ -289,8 +296,11 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     // Lock the canvas and render the buffer to the display
                     c = mSurfaceHolder.lockCanvas(null);
                     synchronized (mSurfaceHolder) {
-                        // Copy our local bitmap to the surface canvas provided
-                        c.drawBitmap(mBitmap, 0, 0, null);
+                        // Copy our local bitmap to the surface canvas provided. Note that we render
+                        // everything with a mBitmapScaling multiplier, because on very tiny displays
+                        // like watches, integer font sizes don't usually fill the display. By scaling
+                        // up this becomes easier to do.
+                        c.drawBitmap(mBitmap, null, new Rect(0,0,c.getWidth(),c.getHeight()), mPaintBitmap);
                     }
                 } catch (InterruptedException e) {
                     Logging.fatal("ansiBuffer.take() failed with InterruptedException " + e);
@@ -305,9 +315,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public void setSurfaceSize(int width, int height) {
             synchronized (mSurfaceHolder) {
                 // Resize the internal bitmap to match the new display dimensions
-                mCanvasWidth = width;
-                mCanvasHeight = height;
-                mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                mCanvasWidth = width * mBitmapScaling;
+                mCanvasHeight = height * mBitmapScaling;
+                mBitmap = Bitmap.createBitmap(mCanvasWidth, mCanvasHeight, Bitmap.Config.ARGB_8888);
                 mCanvas = new Canvas (mBitmap);
                 Logging.debug("Detected change in surface size to " + width + "x" + height);
 
