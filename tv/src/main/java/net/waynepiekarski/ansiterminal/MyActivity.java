@@ -30,7 +30,7 @@ public class MyActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AnsiTerminalView ansi = new AnsiTerminalView (this);
+        AnsiTerminalView ansi = new AnsiTerminalView (this, null);
         setContentView(ansi);
     }
 }

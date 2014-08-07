@@ -26,6 +26,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.view.View;
 
 // Implement a View which has a thin height, and we just draw a strip of pixels as some percentage
@@ -37,8 +38,8 @@ public class MyAccelView extends View {
     private final static int mHeight = 5;
     public final static double mThreshold = 0.5;
 
-    public MyAccelView(Context context) {
-        super(context);
+    public MyAccelView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         mPaint = new Paint();
     }
 

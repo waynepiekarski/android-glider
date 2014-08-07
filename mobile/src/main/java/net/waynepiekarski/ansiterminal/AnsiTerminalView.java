@@ -29,6 +29,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -503,8 +504,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
     }
 
 
-    public AnsiTerminalView (Context context) {
-        super(context);
+    public AnsiTerminalView (Context context, AttributeSet attrs) {
+        super(context, attrs);
 
         // Callback to tell us when the surface is changed
         SurfaceHolder holder = getHolder();

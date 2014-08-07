@@ -14,11 +14,18 @@
                     android:id="@+id/padding_layout">
     </RelativeLayout>
 
-    <!-- Container to store the accelerometer view, hard coded as 5dp inside MyAccelView -->
+    <!-- Container to store the accelerometer view, hard coded as 5 pixels inside MyAccelView -->
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="5dp"
                     android:id="@+id/accel_layout">
+
+        <net.waynepiekarski.ansiterminal.MyAccelView
+              android:id="@+id/accel_view"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+
     </RelativeLayout>
+
 
     <!-- Container to store the game view. Note that we specify
          no height and use a weight of 1 to ensure it fills the
@@ -30,6 +37,12 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:id="@+id/top_layout">
+
+        <net.waynepiekarski.ansiterminal.AnsiTerminalView
+              android:id="@+id/ansi_terminal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+
     </RelativeLayout>
 
     <!-- Padding of 5dp+10dp to match the top so the game view is centered properly -->

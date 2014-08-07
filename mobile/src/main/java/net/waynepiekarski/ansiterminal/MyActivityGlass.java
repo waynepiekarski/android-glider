@@ -55,7 +55,7 @@ public class MyActivityGlass extends Activity {
         mGestureDetector = createGestureDetector(this);
 
         // Create the Glider game object here
-        mView = new AnsiTerminalView(this);
+        mView = new AnsiTerminalView(this, null);
         setContentView(mView);
     }
 

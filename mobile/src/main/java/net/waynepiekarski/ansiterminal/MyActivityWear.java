@@ -63,15 +63,9 @@ public class MyActivityWear extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                // Grab the layout object to embed later things in code
-                RelativeLayout rel = (RelativeLayout)findViewById(R.id.top_layout);
-
-                mAnsiTerminalView = new AnsiTerminalView(MyActivityWear.this);
-                rel.addView(mAnsiTerminalView);
-
-                mAccelView = new MyAccelView(MyActivityWear.this);
-                RelativeLayout accel_rel = (RelativeLayout)findViewById(R.id.accel_layout);
-                accel_rel.addView(mAccelView);
+                // Grab the views we need to reference later on
+                mAnsiTerminalView = (AnsiTerminalView)findViewById(R.id.ansi_terminal);
+                mAccelView = (MyAccelView)findViewById(R.id.accel_view);
 
                 // Prevent display from sleeping
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

@@ -87,7 +87,7 @@ public class MyActivityMobile extends Activity {
 
         FrameLayout f = new FrameLayout(this);
 
-        final AnsiTerminalView ansi = new AnsiTerminalView(this);
+        final AnsiTerminalView ansi = new AnsiTerminalView(this, null);
         f.addView(ansi);
 
         // Create arrow overlays to show the user how to control the UI
