@@ -6,7 +6,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "net.waynepiekarski.ansiterminal"
+        applicationId "net.waynepiekarski.glider"
         minSdkVersion 'L'
         targetSdkVersion 'L'
         versionCode 1
@@ -28,12 +28,12 @@ android {
             java {
                 // The gradle docs try to indicate this should have [ ] around srcDirs but you
                 // actually should leave them out to make it not give an error. Also, you cannot
-                // use relative paths here, so src/main/ansijava is a symlink to work around this.
-                srcDirs 'src/main/java','src/main/ansijava'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityGlass.java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityMobile.java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear*.java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityTV.java'
+                // use relative paths here, so src/main/gliderjava is a symlink to work around this.
+                srcDirs 'src/main/java','src/main/gliderjava'
+                exclude 'net/waynepiekarski/glider/MyActivityGlass.java'
+                exclude 'net/waynepiekarski/glider/MyActivityMobile.java'
+                exclude 'net/waynepiekarski/glider/MyActivityWear*.java'
+                exclude 'net/waynepiekarski/glider/MyActivityTV.java'
             }
         }
     }

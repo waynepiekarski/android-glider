@@ -20,7 +20,7 @@
 //
 // ---------------------------------------------------------------------
 
-package net.waynepiekarski.ansiterminal;
+package net.waynepiekarski.glider;
 
 // Generate ANSI escape sequences to test out the AnsiTerminalView
 public class AnsiString {

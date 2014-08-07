@@ -41,8 +41,8 @@ char *char_buffer_ptr = char_buffer;
 size_t char_buffer_ofs = 0;
 
 #undef LOGD
-#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", "%s: %d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
-#define FATAL(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-JNI", "FATAL: %s:%d " fmt, __FILE__, __LINE__, ## __VA_ARGS__), exit(1)
+#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "Glider-JNI", "%s: %d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
+#define FATAL(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "Glider-JNI", "FATAL: %s:%d " fmt, __FILE__, __LINE__, ## __VA_ARGS__), exit(1)
 
 
 void java_submitAnsiBuffer(const char *buffer, size_t len) {
@@ -159,7 +159,7 @@ int glider_main (void);
 
 // Method that Java will call to get things started
 void
-Java_net_waynepiekarski_ansiterminal_AnsiTerminalView_nativeAnsiCode(
+Java_net_waynepiekarski_glider_AnsiTerminalView_nativeAnsiCode(
                                                   JNIEnv* env,
                                                   jobject thiz )
 {

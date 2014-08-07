@@ -19,7 +19,7 @@
                     android:layout_height="5dp"
                     android:id="@+id/accel_layout">
 
-        <net.waynepiekarski.ansiterminal.MyAccelView
+        <net.waynepiekarski.glider.MyAccelView
               android:id="@+id/accel_view"
               android:layout_width="match_parent"
               android:layout_height="match_parent"/>
@@ -38,7 +38,7 @@
                     android:layout_weight="1"
                     android:id="@+id/top_layout">
 
-        <net.waynepiekarski.ansiterminal.AnsiTerminalView
+        <net.waynepiekarski.glider.AnsiTerminalView
               android:id="@+id/ansi_terminal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"/>

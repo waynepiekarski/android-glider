@@ -20,7 +20,7 @@
 //
 // ---------------------------------------------------------------------
 
-package net.waynepiekarski.ansiterminal;
+package net.waynepiekarski.glider;
 
 import android.app.Activity;
 import android.content.Context;

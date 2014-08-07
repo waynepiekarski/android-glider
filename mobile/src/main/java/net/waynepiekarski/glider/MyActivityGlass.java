@@ -20,7 +20,7 @@
 //
 // ---------------------------------------------------------------------
 
-package net.waynepiekarski.ansiterminal;
+package net.waynepiekarski.glider;
 
 import com.google.android.glass.app.Card;
 import com.google.android.glass.media.Sounds;

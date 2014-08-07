@@ -12,7 +12,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "net.waynepiekarski.ansiterminal"
+        applicationId "net.waynepiekarski.glider"
         minSdkVersion 19
         targetSdkVersion 20
         versionCode 1
@@ -33,9 +33,9 @@ android {
         main {
             java {
                 srcDir 'java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityMobile.java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityTV.java'
-                exclude 'net/waynepiekarski/ansiterminal/MyActivityWear*.java'
+                exclude 'net/waynepiekarski/glider/MyActivityMobile.java'
+                exclude 'net/waynepiekarski/glider/MyActivityTV.java'
+                exclude 'net/waynepiekarski/glider/MyActivityWear*.java'
             }
         }
     }
