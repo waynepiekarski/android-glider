@@ -41,7 +41,8 @@ char *char_buffer_ptr = char_buffer;
 size_t char_buffer_ofs = 0;
 
 #undef LOGD
-#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "Glider-JNI", "%s: %d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
+// #define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "Glider-JNI", "%s: %d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
+#define LOGD(fmt, ...) { /* Do nothing */ }
 #define FATAL(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "Glider-JNI", "FATAL: %s:%d " fmt, __FILE__, __LINE__, ## __VA_ARGS__), exit(1)
 
 
@@ -61,9 +62,9 @@ void java_submitAnsiBuffer(const char *buffer, size_t len) {
 void ansi_fflush (void)
 {
   // Write all the chars in the buffer to the Java processing function
-  if (char_buffer_ofs == 0)
+  if (char_buffer_ofs == 0) {
     LOGD("Not performing ansi_fflush() since there is nothing in the buffer");
-  else {
+  } else {
     java_submitAnsiBuffer(char_buffer, char_buffer_ofs);
     char_buffer_ptr = char_buffer;
     char_buffer_ofs = 0;

@@ -99,7 +99,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 if (len == 0) Logging.fatal("Empty buffer found");
                 // Make a copy because the native code will reuse the buffer
                 byte[] copy = Arrays.copyOfRange(buffer, 0, len);
-                Logging.debug("Storing ANSI buffer with " + copy.length + " to the processing queue");
+                // Logging.debug("Storing ANSI buffer with " + copy.length + " to the processing queue");
                 ansiBuffer.put(copy);
             } catch (InterruptedException e) {
                 Logging.fatal("Failed to put into ANSI buffer with InterruptedException " + e);
@@ -136,8 +136,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 lastHeight = mCharHeight;
                 mCharWidth = rectW.width();
                 mCharHeight = metrics.bottom - metrics.top;
-                Logging.debug("Calculated for size=" + fontSize + " bounds=" + mCharWidth + "x" + mCharHeight + " for total=" + (mCharWidth*terminalWidth) + "x" + (mCharHeight*terminalHeight) + " canvas=" + mCanvasWidth + "x" + mCanvasHeight);
-                Logging.debug("Font width=" + rectW.width() + " top=" + metrics.top + " bottom=" + metrics.bottom + " descent=" + metrics.descent);
+                Logging.debug("Calculated for size=" + fontSize + " bounds=" + mCharWidth + "x" + mCharHeight + " for total=" + (mCharWidth*terminalWidth) + "x" + (mCharHeight*terminalHeight) + " canvas=" + mCanvasWidth + "x" + mCanvasHeight + " fontWidth=" + rectW.width() + " top=" + metrics.top + " bottom=" + metrics.bottom + " descent=" + metrics.descent);
                 boolean done = false;
 
                 if (mCanvasRound) {
@@ -230,7 +229,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         }
 
         public void doDraw(Canvas canvas, byte[] buffer) {
-            Logging.debug("Received ANSI buffer with " + buffer.length + " bytes from native code");
+            // Logging.debug("Received ANSI buffer with " + buffer.length + " bytes from native code");
             drawAnsiBuffer(canvas, buffer);
         }
 
@@ -298,9 +297,9 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 Canvas c = null;
                 try {
                     // Block until ANSI commands are available, and then render them
-                    Logging.debug ("Waiting for new ANSI buffer, sleeping ...");
+                    // Logging.debug ("Waiting for new ANSI buffer, sleeping ...");
                     byte[] buffer = ansiBuffer.take();
-                    Logging.debug ("Rendering new ANSI buffer of length " + buffer.length);
+                    // Logging.debug ("Rendering new ANSI buffer of length " + buffer.length);
 
                     // Do the drawing to our local bitmap
                     doDraw(mCanvas, buffer);
@@ -571,7 +570,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
     // Method to inject keyboard events into the queue
     public void injectKeyboardEvent (byte key) {
-        Logging.debug ("Generating keystroke '" + String.valueOf((char)(key & 0xFF)));
+        Logging.debug ("Generating keystroke '" + String.valueOf((char)(key & 0xFF)) + "'");
         keyBuffer.clear();
         try {
             keyBuffer.put(key);
@@ -649,11 +648,11 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         } catch (InterruptedException e) {
             Logging.fatal ("Failed to read keystroke from " + e);
         }
-        Logging.debug("Found that key " + b + " is now available, it is ready in the buffer");
+        // Logging.debug("Found that key " + b + " is now available, it is ready in the buffer");
     }
 
     public boolean timeUntilKeypress(int microseconds) {
-        Logging.debug("Waiting for " + microseconds + " usec in timeUntilKeypress");
+        // Logging.debug("Waiting for " + microseconds + " usec in timeUntilKeypress");
         // Native code will call this, sleep until a key is available, but do not read it
         boolean ret = false;
         try {
@@ -678,7 +677,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         } catch (InterruptedException e) {
             Logging.fatal ("Failed to read keystroke from " + e);
         }
-        Logging.debug("Unblocking from character " + b + " in waitForKeypress");
+        // Logging.debug("Unblocking from character " + b + " in waitForKeypress");
         return b;
     }
 
@@ -698,7 +697,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         } catch (InterruptedException e) {
             Logging.fatal ("Failed to read keystroke from " + e);
         }
-        Logging.debug("Unblocking from character " + b + " in waitForArrowpress");
+        // Logging.debug("Unblocking from character " + b + " in waitForArrowpress");
         return b;
     }
 
