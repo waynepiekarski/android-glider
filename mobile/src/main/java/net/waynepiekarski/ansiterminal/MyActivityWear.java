@@ -50,6 +50,11 @@ public class MyActivityWear extends Activity {
         stub.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                // Need to also call the original insets since we have overridden the original
+                // https://developer.android.com/reference/android/view/View.OnApplyWindowInsetsListener.html
+                stub.onApplyWindowInsets(windowInsets);
+
+                // Pass in if we detected round or not to the font resizing algorithm
                 mAnsiTerminalView.surfaceRound(windowInsets.isRound());
                 return windowInsets;
             }

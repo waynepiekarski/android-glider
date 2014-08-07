@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Use this layout to constrain the app to fitting within the circle of the round watch face -->
-<android.support.wearable.view.BoxInsetLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MyActivity"
-    tools:deviceIds="wear_round">
+    tools:deviceIds="wear_round"
+    android:id="@+id/main_layout">
 
-    <!-- Note that we need to use app:layout_box="all" if we want BoxInsetLayout to
-         fit the child view within a square fitting on the round display. BoxInsetLayout
-         does nothing unless you add app:layout_box. Note that the accelerometer view
-         gets put inside the box, while the main game runs on the whole display so I
-         can control it directly -->
+    <!-- Force some spacing at the top -->
     <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/accel_layout"
-                    app:layout_box="all">
-
+                    android:layout_height="10dp"
+                    android:id="@+id/padding_layout">
     </RelativeLayout>
 
+    <!-- Container to store the accelerometer view, hard coded as 5dp inside MyAccelView -->
     <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/top_layout"
-                    app:layout_box="">
-
+                    android:layout_height="5dp"
+                    android:id="@+id/accel_layout">
     </RelativeLayout>
 
-</android.support.wearable.view.BoxInsetLayout>
+    <!-- Container to store the game view. Note that we specify
+         no height and use a weight of 1 to ensure it fills the
+         remainder of the space, but allow the following layout
+         to get the space it wants.
+         http://stackoverflow.com/questions/11019456/linearlayout-how-to-place-a-view-below-right-of-a-fill-parent-view
+         -->
+    <RelativeLayout android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:id="@+id/top_layout">
+    </RelativeLayout>
+
+    <!-- Padding of 5dp+10dp to match the top so the game view is centered properly -->
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:id="@+id/padding_layout">
+    </RelativeLayout>
+
+</LinearLayout>
