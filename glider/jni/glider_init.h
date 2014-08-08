@@ -32,6 +32,7 @@
   char *crash;
   char *intro_pixmap;
   char *menu_picture;
+  char *notes_0;
   char *notes_1;
   char *notes_2;
   char *help_1;
@@ -49,6 +50,7 @@ void init_level_maps (void)
   crash = _crash [0];
   intro_pixmap = _intro_pixmap [0];
   menu_picture = _menu_picture [0];
+  notes_0 = _notes_0 [0];
   notes_1 = _notes_1 [0];
   notes_2 = _notes_2 [0];
   help_1 = _help_1 [0];

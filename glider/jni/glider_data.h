@@ -91,9 +91,9 @@ char *_intro_pixmap [] = {
 @   \\/____\\ \\/____/ \\/_/\\/__,__/\\/____/ \\/_/      \\/__/      \\/_/\\/_/ \\/___/   @\
 @     /\\____/                                                                  @\
 @     \\/___/                                                                   @\
-@              Copyright (C) 1996 - The Dark Scythe Corporation                @\
+@                          Copyright (C) 1996-2014                             @\
 @                                                                              @\
-@         Coded by Wayne Piekarski (9506012x@lux.levels.unisa.edu.au)          @\
+@               Coded by Wayne Piekarski http://tinmith.net/wayne              @\
 @                                                                              @\
 @                   |         |    Based  on  the  game  for  the  Macintosh,  @\
 @                   |    _    |    Glider 3.1, written by John Calhoun - 1991  @\
@@ -109,7 +109,7 @@ char *_intro_pixmap [] = {
 char *_intro_pixmap [] = {
 "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\
 @                                                                              @\
-@  Welcome to the latest release of Glider/UX....                              @\
+@  Welcome to the latest release of Glider/Android....                         @\
 @         ___            __                               __         ____      @\
 @        /\\_ \\    __    /\\ \\                             /  \\       / __ \\     @\
 @    ____\\//\\ \\  /\\_\\   \\_\\ \\    ___   _ __      __  __ /\\__ \\     /\\ \\/\\ \\    @\
@@ -119,14 +119,14 @@ char *_intro_pixmap [] = {
 @   \\/____\\ \\/____/ \\/_/\\/__,__/\\/____/ \\/_/      \\/__/      \\/_/\\/_/ \\/___/   @\
 @     /\\____/                                                                  @\
 @     \\/___/                                                                   @\
-@              Copyright (C) 1996 - The Dark Scythe Corporation                @\
+@                          Copyright (C) 1996-2014                             @\
 @                                                                              @\
-@         Coded by Wayne Piekarski (9506012x@lux.levels.unisa.edu.au)          @\
+@               Coded by Wayne Piekarski http://tinmith.net/wayne              @\
 @                                                                              @\
 @                                  Based  on  the  game  for  the  Macintosh,  @\
 @     |           |                Glider 3.1, written by John Calhoun - 1991  @\
 @     |---. ,---. |---  ,---.                                                  @\
-@     |   | |---' |     ,---|      Please report bugs, problems & suggestions  @\
+@     |   | |---' |     ,---|                                                  @\
 @     `---' `---' `---' `---`                                                  @\
 @                                           [ Press any key to continue.... ]  @\
 @                                                                              @\
@@ -169,6 +169,33 @@ char *menu_options [] = {
 "     QUIT      " };
 
 
+char *_notes_0 [] = {
+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\
+@         |\\                                                                   @\
+@         | \\     Greetings Glider fans! Well, it is 2014, and I have ported   @\
+@         |  |    my old Glider game from 1997 over to Android for you to play @\
+@         |  |)   on your current devices! The game is basically the same as   @\
+@         |  | )  before, I wrote an ANSI terminal emulator for Android to     @\
+@         |  |_)  run the game pretty much unmodified. You can use the touch   @\
+@        /|  / /  screen controls on a mobile or tablet to emulate the arrow   @\
+@       /_| /_/|  keys, and touch in the center to select. On a wearable, you  @\
+@       | | | ||  can touch the display on the edges to emulate the arrow keys.@\
+@       | | | ||\\   The wearable also allows you to tilt the device to emulate @\
+@      /| | | || \\   the arrow keys. If you have a game controller or TV then  @\
+@     / | | | ||  \\   the game supports those controls as well.                @\
+@    /  | | | ||   \\                                                           @\
+@   /   | | | ||    \\   This is *really* old messy code that I wrote back when @\
+@  /    | | | ||     \\   I was learning to program in C back in 1996. It was   @\
+@ /     | | | ||      \\   designed to run on text terminals over slow serial   @\
+@ \\  ___| | | ||___   /    connections in my university Unix labs, which is    @\
+@  --   | | | ||\\  ---     why the graphics are the way they are! :)           @\
+@      /| | | |\\  \\                                                            @\
+@     / \\_/ \\_/ \\___|                                    [ Continued...]       @\
+@    /  |     |  \\                                                             @\
+@    \\__|     |__/                      [ Press any key to continue.... ]      @\
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" };
+
+
 char *_notes_1 [] = {
 "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\
 @         |\\                                                                   @\
@@ -176,7 +203,7 @@ char *_notes_1 [] = {
 @         |  |    have produced a version of Glider which incorporates lots of @\
 @         |  |)   new features, speed-ups in the screen code, and bug fixes.   @\
 @         |  | )  I've tested the code out quite a bit and it seems to work    @\
-@         |  |_)  very well. However, there are allways problems, so if you    @\
+@         |  |_)  very well. However, there are always problems, so if you     @\
 @        /|  / /  find any, I'd like you to tell me about them and they'll be  @\
 @       /_| /_/|  fixed as soon as I can.                                      @\
 @       | | | ||                                                               @\
@@ -189,8 +216,8 @@ char *_notes_1 [] = {
 @ /     | | | ||      \\                                                        @\
 @ \\  ___| | | ||___   /                                        [ Continued...] @\
 @  --   | | | ||\\  ---                                                         @\
-@      /| | | |\\  \\       If you have and problems or questions about Glider,  @\
-@     / \\_/ \\_/ \\___|     please email me at 9506012x@lux.levels.unisa.edu.au  @\
+@      /| | | |\\  \\                                                            @\
+@     / \\_/ \\_/ \\___|                                                          @\
 @    /  |     |  \\                                                             @\
 @    \\__|     |__/                      [ Press any key to continue.... ]      @\
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" };
@@ -216,8 +243,8 @@ char *_notes_2 [] = {
 @ /     | | | ||      \\   have enjoyed making it....                           @\
 @ \\  ___| | | ||___   /                                                        @\
 @  --   | | | ||\\  ---                                                         @\
-@      /| | | |\\  \\       If you have and problems or questions about Glider,  @\
-@     / \\_/ \\_/ \\___|     please email me at 9506012x@lux.levels.unisa.edu.au  @\
+@      /| | | |\\  \\                                                            @\
+@     / \\_/ \\_/ \\___|                                                          @\
 @    /  |     |  \\                                                             @\
 @    \\__|     |__/                      [ Press any key to continue.... ]      @\
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" };
@@ -232,19 +259,19 @@ char *_help_1 [] = {
 @         |  | )                         |_| |_|\\___|_| .__/                   @\
 @         |  |_)                                      |_|                      @\
 @        /|  / /                                                               @\
-@       /_| /_/|  To play Glider, you can use the numeric keypad, the arrow    @\
-@       | | | ||  keys, or the J M < > keys which are present on all keyboards.@\
-@       | | | ||\\  When Glider asks you to press <Select>, you can press Enter,@\
-@      /| | | || \\  number 5, or the Space Bar. You can swap between any of the@\
-@     / | | | ||  \\  supported keys at any time, the program will not care.    @\
+@       /_| /_/|  On a mobile or tablet, you can tap the arrows visible on the @\
+@       | | | ||  edges of the display, and tap in the center to select.       @\
+@       | | | ||\\  On a wearable device, you can tap the edges of the display, @\
+@      /| | | || \\  or rotate the device to move left and right.               @\
+@     / | | | ||  \\  On a TV device, you can use the standard gamepad controls.@\
 @    /  | | | ||   \\                                                           @\
 @   /   | | | ||    \\  Note that you can only steer the Glider left and right, @\
 @  /    | | | ||     \\  and the only way to move up is to use vents. The       @\
 @ /     | | | ||      \\  Glider will fall all the way to the floor if you are  @\
 @ \\  ___| | | ||___   /   not careful.                                         @\
 @  --   | | | ||\\  ---                                                         @\
-@      /| | | |\\  \\       If you have and problems or questions about Glider,  @\
-@     / \\_/ \\_/ \\___|     please email me at 9506012x@lux.levels.unisa.edu.au  @\
+@      /| | | |\\  \\                                                            @\
+@     / \\_/ \\_/ \\___|                                                          @\
 @    /  |     |  \\                                                             @\
 @    \\__|     |__/                      [ Press any key to continue.... ]      @\
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" };
@@ -270,8 +297,8 @@ char *_help_2 [] = {
 @ /     | | | ||      \\  special region. (You will know it when you see it)    @\
 @ \\  ___| | | ||___   /   Once your plane touches a % charachter, you win!     @\
 @  --   | | | ||\\  ---                                                         @\
-@      /| | | |\\  \\       If you have and problems or questions about Glider,  @\
-@     / \\_/ \\_/ \\___|     please email me at 9506012x@lux.levels.unisa.edu.au  @\
+@      /| | | |\\  \\                                                            @\
+@     / \\_/ \\_/ \\___|                                                          @\
 @    /  |     |  \\                                                             @\
 @    \\__|     |__/            [ Press any key to return to the menu.... ]      @\
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" };

@@ -23,7 +23,7 @@
 #define TRUE 1
 #define FALSE 0
 
-#define GLIDER_VERSION "1.0g"
+#define GLIDER_VERSION "1.0h"
 #define GLIDER_DAY 18
 #define GLIDER_MONTH 8
 #define GLIDER_MONTHSTR "August"

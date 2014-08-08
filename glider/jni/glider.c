@@ -511,6 +511,9 @@ int main (void)
   
   park_cursor ();
   wait_for_key ();
+  put_screen (notes_0);
+  park_cursor ();
+  wait_for_key ();
   put_screen (notes_1);
   park_cursor ();
   wait_for_key ();

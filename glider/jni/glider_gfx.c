@@ -30,7 +30,7 @@ void draw_frame (void)
   
   ansi_SetAttr (ATTR_reverse);
   ansi_Position (1, 1);
-  ansi_printf ("    Glider/UX Version %s - Coded by Wayne Piekarski (9506012x) - %2d/%d/%2d   \n", GLIDER_VERSION, GLIDER_DAY, GLIDER_MONTH, GLIDER_YEAR);
+  ansi_printf ("       Glider/Android Version %s - Coded by Wayne Piekarski - %2d/%d/%2d      \n", GLIDER_VERSION, GLIDER_DAY, GLIDER_MONTH, GLIDER_YEAR);
   
   for (cy = 1; cy <= MAX_SCR_ROWS; cy++)
     {
