@@ -1,0 +1,26 @@
+Screenshots
+
+Default – English (United States) – en-US
+JPEG or 24-bit PNG (no alpha). Min length for any side: 320px. Max length for any side: 3840px.
+At least 2 screenshots are required overall. Max 8 screenshots per type. Drag to reorder or to move between types.
+
+
+Hi-res icon
+
+Default – English (United States) – en-US
+512 x 512
+32-bit PNG (with alpha)
+
+
+Feature Graphic
+
+Default – English (United States) – en-US
+1024 w x 500 h
+JPG or 24-bit PNG (no alpha)
+
+
+Promo Graphic (optional)
+
+Default – English (United States) – en-US
+180 w x 120 h
+JPG or 24-bit PNG (no alpha)
