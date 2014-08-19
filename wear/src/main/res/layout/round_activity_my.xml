@@ -48,7 +48,7 @@
     <!-- Padding of 5dp+10dp to match the top so the game view is centered properly -->
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="15dp"
-                    android:id="@+id/padding_layout">
+                    android:id="@+id/padding2_layout">
     </RelativeLayout>
 
 </LinearLayout>
