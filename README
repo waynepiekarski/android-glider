@@ -1,0 +1,51 @@
+// ---------------------------------------------------------------------
+//
+// Glider
+//
+// Copyright (C) 1996-2014 Wayne Piekarski
+// wayne@tinmith.net http://tinmith.net/wayne
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// ---------------------------------------------------------------------
+
+Greetings Glider fans! Well, it is 2014, and I have ported my old Glider 
+game from 1997 over to Android for you to play on your current devices! 
+The game is basically the same as before, I wrote an ANSI terminal 
+emulator for Android to run the game's original C code pretty much 
+unmodified via the NDK. You can use the touch screen controls on a 
+mobile or tablet to emulate the arrow keys, and touch in the center to 
+select. On an Android Wear device, you can touch the display on the 
+edges to emulate the arrow keys. The wearable also allows you to tilt 
+the device to emulate the arrow keys. If you have a game controller or 
+TV then the game supports those controls as well.
+
+This is *really* old messy code that I wrote back when I was learning to 
+program in C back in 1996. It was designed to run on text terminals over 
+slow serial connections in my university Unix labs, which is why the 
+graphics are the way they are! :)
+
+Here are some links to the original game this is based on, written by 
+John Calhoun back in 1990:
+
+https://www.youtube.com/watch?v=8F3oUr2QPQ0
+https://itunes.apple.com/us/app/glider/id482536700?mt=12
+http://www.vectronicsappleworld.com/macintosh/glider.html
+
+The source code for this game is licensed under the GPLv3. See the 
+COPYING file for more information.
+
+You can download the game directly to your Android device from the 
+Google Play store: 
+https://play.google.com/store/apps/details?id=net.waynepiekarski.glider
