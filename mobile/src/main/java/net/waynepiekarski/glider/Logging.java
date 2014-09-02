@@ -26,7 +26,7 @@ import android.util.Log;
 
 public class Logging {
 
-    private static final String TAG = "AnsiTerminal";
+    private static final String TAG = "Glider";
 
     public static void debug (String str) {
         Log.d (TAG, str);

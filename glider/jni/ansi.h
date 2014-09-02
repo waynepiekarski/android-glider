@@ -61,7 +61,7 @@
 /* Macros for terminal operations */
 #ifdef __ANDROID__
 #include <android/log.h>
-#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "AnsiTerminal-Glider", "%s:%d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
+#define LOGD(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "Glider", "%s:%d " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
 void ansi_fflush(void);
 #define error_printf(...) ansi_printf(__VA_ARGS__), ansi_fflush()
 void ansi_printf(const char* format, ...);
