@@ -54,8 +54,11 @@ public class MyActivityWear extends Activity {
                 // https://developer.android.com/reference/android/view/View.OnApplyWindowInsetsListener.html
                 stub.onApplyWindowInsets(windowInsets);
 
-                // Pass in if we detected round or not to the font resizing algorithm
-                mAnsiTerminalView.surfaceRound(windowInsets.isRound());
+                // Pass in if we detected round or not to the font resizing algorithm.
+                // WatchViewStub seems to call onApplyWindowInsets() multiple times before
+                // the layout is inflated, so make sure we check the reference is valid.
+                if (mAnsiTerminalView != null)
+                    mAnsiTerminalView.surfaceRound(windowInsets.isRound());
                 return windowInsets;
             }
         });
