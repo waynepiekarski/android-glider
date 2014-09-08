@@ -82,7 +82,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             mContext = context;
 
             mPaintText = new Paint();
-            mPaintText.setTypeface(Typeface.create("Monospace", Typeface.BOLD));
+            mPaintText.setTypeface(Typeface.create("monospace", Typeface.BOLD));
             mPaintText.setColor(mDefaultForeground);
 
             mPaintBackground = new Paint();
