@@ -30,6 +30,7 @@ android {
     }
     sourceSets {
         main {
+            jni.srcDirs = ['../glider/jni']
             java.srcDirs = ['src/main/java', '../common/src/main/java']
         }
     }
