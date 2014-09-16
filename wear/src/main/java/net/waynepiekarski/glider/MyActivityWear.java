@@ -29,8 +29,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.wearable.view.BoxInsetLayout;
+import android.support.wearable.view.DismissOverlayView;
 import android.support.wearable.view.WatchViewStub;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -40,6 +44,9 @@ public class MyActivityWear extends Activity {
 
     private MyAccelView mAccelView;
     private AnsiTerminalView mAnsiTerminalView;
+    private DismissOverlayView mDismissOverlayView;
+    private RelativeLayout mMainLayout;
+    private GestureDetectorCompat mGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,7 @@ public class MyActivityWear extends Activity {
                 // Grab the views we need to reference later on
                 mAnsiTerminalView = (AnsiTerminalView)findViewById(R.id.ansi_terminal);
                 mAccelView = (MyAccelView)findViewById(R.id.accel_view);
+                mMainLayout = (RelativeLayout)findViewById(R.id.main_layout);
 
                 // Prevent display from sleeping
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -93,7 +101,28 @@ public class MyActivityWear extends Activity {
                         // Not needed
                     }
                 }, sm.getDefaultSensor(sensorType), SensorManager.SENSOR_DELAY_NORMAL);
+
+                // Add a listener to handle closing the app on a long press to the activity
+                mDismissOverlayView = new DismissOverlayView(MyActivityWear.this);
+                mMainLayout = (RelativeLayout)findViewById(R.id.main_layout);
+                mMainLayout.addView(mDismissOverlayView,new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.MATCH_PARENT));
+                mGestureDetector = new GestureDetectorCompat(MyActivityWear.this, new GestureDetector.SimpleOnGestureListener(){
+                    @Override
+                    public void onLongPress (MotionEvent e){
+                        Logging.debug("Detected long press, showing exit widget");
+                        mDismissOverlayView.show();
+                    }
+                });
+
             }
         });
+    }
+
+    // Deliver touch events from the activity to the long press detector
+    @Override
+    public boolean dispatchTouchEvent (MotionEvent e) {
+        return mGestureDetector.onTouchEvent(e) || super.dispatchTouchEvent(e);
     }
 }
