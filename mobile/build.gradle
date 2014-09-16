@@ -25,12 +25,7 @@ android {
     }
     sourceSets {
         main {
-            java {
-                srcDir 'java'
-                exclude 'net/waynepiekarski/glider/MyActivityGlass.java'
-                exclude 'net/waynepiekarski/glider/MyActivityTV.java'
-                exclude 'net/waynepiekarski/glider/MyActivityWear*.java'
-            }
+            java.srcDirs = ['src/main/java', '../common/src/main/java']
         }
     }
 

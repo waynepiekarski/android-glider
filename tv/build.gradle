@@ -25,16 +25,7 @@ android {
     }
     sourceSets {
         main {
-            java {
-                // The gradle docs try to indicate this should have [ ] around srcDirs but you
-                // actually should leave them out to make it not give an error. Also, you cannot
-                // use relative paths here, so src/main/gliderjava is a symlink to work around this.
-                srcDirs 'src/main/java','src/main/gliderjava'
-                exclude 'net/waynepiekarski/glider/MyActivityGlass.java'
-                exclude 'net/waynepiekarski/glider/MyActivityMobile.java'
-                exclude 'net/waynepiekarski/glider/MyActivityWear*.java'
-                exclude 'net/waynepiekarski/glider/MyActivityTV.java'
-            }
+            java.srcDirs = ['src/main/java', '../common/src/main/java']
         }
     }
 
