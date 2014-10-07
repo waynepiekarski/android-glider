@@ -36,7 +36,7 @@ public class MyAccelView extends View {
     private Paint mPaint;
     private double mValue = +0.5;
     private final static int mHeight = 5;
-    public final static double mThreshold = 0.5;
+    public final static double mThreshold = 0.3;
 
     public MyAccelView(Context context, AttributeSet attrs) {
         super(context, attrs);
