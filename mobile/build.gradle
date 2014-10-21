@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    // Very important to use SDK 19 otherwise the NDK will give errors about .h files not being found
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion "20.0.0"
 
     defaultConfig {
         applicationId "net.waynepiekarski.glider"
         minSdkVersion 10
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
         ndk {

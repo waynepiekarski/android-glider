@@ -25,7 +25,7 @@ package net.waynepiekarski.glider;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class MyActivity extends Activity {
+public class MyActivityTV extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
