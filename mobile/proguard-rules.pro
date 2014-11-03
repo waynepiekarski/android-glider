@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+
+# Do not strip any of my Java code out, need to keep it around for JNI calls to use
+-keep class net.waynepiekarski.glider.** { *; }
