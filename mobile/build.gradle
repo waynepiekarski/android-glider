@@ -30,7 +30,7 @@ android {
         }
     }
 
-    buildTypes.debug.jniDebugBuild true
+    buildTypes.debug.jniDebuggable true
 
     productFlavors {
         x86 {
