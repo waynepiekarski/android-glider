@@ -2,10 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.waynepiekarski.glider" >
 
+    <uses-feature android:name="android.hardware.gamepad"     android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_papercraft"
         android:label="@string/app_name"
+        android:isGame="true"
         android:theme="@style/AppTheme" >
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <activity
@@ -20,6 +24,7 @@
 
         <activity
             android:name=".MyActivityTV"
+            android:banner="@drawable/tv_banner"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
