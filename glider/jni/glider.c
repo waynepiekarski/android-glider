@@ -224,7 +224,6 @@ int play_level (int level, long int *score, int lives, int total_score)
 	  {
 	  case DIR_left: direction = DIR_BACKWARD; break;
 	  case DIR_right: direction = DIR_FORWARD; break;
-	  default: KeyPressed = terminal_getchar (); break;
 	  }
       
       aircraft_stats = check_aircraft (aircraft_x, aircraft_y, level, aircraft);
