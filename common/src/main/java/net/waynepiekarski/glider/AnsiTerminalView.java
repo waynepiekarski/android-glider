@@ -725,6 +725,12 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
     // This will be called within a new thread and can make calls to the three methods above
     public native void nativeAnsiCode();
 
+    public int getPackageVersion() {
+        Logging.debug("Returning back VERSION_CODE " + BuildConfig.VERSION_CODE);
+        return BuildConfig.VERSION_CODE;
+    }
+
+
     static {
         System.loadLibrary("native-jni");
     }

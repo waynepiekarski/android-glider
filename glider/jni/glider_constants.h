@@ -23,6 +23,8 @@
 #define TRUE 1
 #define FALSE 0
 
+int java_getPackageVersion();
+#define GLIDER_PACKAGE java_getPackageVersion()
 #define GLIDER_VERSION "1.0h"
 #define GLIDER_DAY 18
 #define GLIDER_MONTH 8

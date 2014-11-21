@@ -154,6 +154,19 @@ int java_timeUntilKeypress(int microseconds) {
   return result;
 }
 
+int java_getPackageVersion(void) {
+  LOGD("getPackageVersion making call to Java");
+
+  jclass clazz = (*jni_env)->GetObjectClass( jni_env, jni_object );
+  if (clazz == NULL) FATAL("Failed to GetObjectClass");
+  jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "getPackageVersion", "()I" );
+  if (methodID == NULL) FATAL("Failed to GetMethodID");
+  int result = (*jni_env)->CallIntMethod (jni_env, jni_object, methodID);
+  (*jni_env)->DeleteLocalRef(jni_env, clazz);
+
+  return result;
+}
+
 
 int glider_main (void);
 
