@@ -276,18 +276,6 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             ansiTest.append(AnsiString.putString(13, 13, "yyyyyyyyyyyyyyyy"));
             ansiTest.append(AnsiString.putString(14, 14, "yyyyyyyyyyyyyyyy"));
 
-            ansiTest.append(AnsiString.setBackground(AnsiString.GREEN));
-            ansiTest.append(AnsiString.setForeground(AnsiString.RED));
-            ansiTest.append(AnsiString.putFramedString(10, 75, "Clear box should not wrap-around", 1));
-
-            // Animated text with clear box to show things are updating
-            ansiTest.append(AnsiString.defaultAttr());
-            ansiTest.append(AnsiString.putFramedString(tempR, tempC, "R=" + tempR + ",C=" + tempC, 1));
-            tempR += 1;
-            if (tempR > 25) tempR = 1;
-            tempC += 1;
-            if (tempC > 80) tempC = 1;
-
             // Now parse the ANSI buffer and render it
             drawAnsiBuffer(canvas, ansiTest.toString());
         }
