@@ -22,7 +22,9 @@
 
 package net.waynepiekarski.glider;
 
+import android.app.UiModeManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -64,6 +66,8 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
         public Paint mPaintBackground;
         public int mCanvasWidth;
         public int mCanvasHeight;
+        public int mCanvasWidthPadding;
+        public int mCanvasHeightPadding;
         public int mCharWidth;
         public int mCharHeight;
         public int mCharWidthOffset;
@@ -136,7 +140,7 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                 lastHeight = mCharHeight;
                 mCharWidth = rectW.width();
                 mCharHeight = metrics.bottom - metrics.top;
-                Logging.debug("Calculated for size=" + fontSize + " bounds=" + mCharWidth + "x" + mCharHeight + " for total=" + (mCharWidth*terminalWidth) + "x" + (mCharHeight*terminalHeight) + " canvas=" + mCanvasWidth + "x" + mCanvasHeight + " fontWidth=" + rectW.width() + " top=" + metrics.top + " bottom=" + metrics.bottom + " descent=" + metrics.descent);
+                Logging.debug("Calculated for size=" + fontSize + " bounds=" + mCharWidth + "x" + mCharHeight + " for total=" + (mCharWidth*terminalWidth) + "x" + (mCharHeight*terminalHeight) + " canvas=" + mCanvasWidth + "x" + mCanvasHeight + " padding=" + 2*mCanvasWidthPadding + "x" + 2*mCanvasHeightPadding + " fontWidth=" + rectW.width() + " top=" + metrics.top + " bottom=" + metrics.bottom + " descent=" + metrics.descent);
                 boolean done = false;
 
                 if (mCanvasRound) {
@@ -144,13 +148,13 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
                     double x = mCharWidth*terminalWidth / 2.0;
                     double y = mCharHeight*terminalHeight / 2.0;
                     // Use ellipse formula (x/rw)^2+(y/rh)^2 to see if we are inside the circle still
-                    double xrw = x / (mCanvasWidth / 2.0);
-                    double yrw = y / (mCanvasHeight / 2.0);
+                    double xrw = x / ((mCanvasWidth-2*mCanvasWidthPadding) / 2.0);
+                    double yrw = y / ((mCanvasHeight-2*mCanvasHeightPadding) / 2.0);
                     if (xrw*xrw + yrw*yrw > 1.0)
                         done = true;
                 } else {
                     // Regular device, so just make sure we don't exceed the rectangle that we have
-                    if ((mCharWidth * terminalWidth > mCanvasWidth) || (mCharHeight * terminalHeight > mCanvasHeight)) {
+                    if ((mCharWidth * terminalWidth > (mCanvasWidth-2*mCanvasWidthPadding)) || (mCharHeight * terminalHeight > (mCanvasHeight-2*mCanvasHeightPadding))) {
                         done = true;
                     }
                 }
@@ -315,11 +319,13 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
             }
         }
 
-        public void setSurfaceSize(int width, int height) {
+        public void setSurfaceSize(int width, int height, float overscanPercent) {
             synchronized (mSurfaceHolder) {
                 // Resize the internal bitmap to match the new display dimensions
                 mCanvasWidth = width;
                 mCanvasHeight = height;
+                mCanvasWidthPadding = (int)(mCanvasWidth * overscanPercent);
+                mCanvasHeightPadding = (int)(mCanvasHeight * overscanPercent);
                 mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 mCanvas = new Canvas (mBitmap);
                 Logging.debug("Detected change in surface size to " + width + "x" + height);
@@ -512,8 +518,15 @@ public class AnsiTerminalView extends SurfaceView implements SurfaceHolder.Callb
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Logging.debug("surfaceChanged");
+
+        // Detect if we are running on a TV which needs overscan padding of 10% on all sides
+        float overscanPercent;
+        UiModeManager uiModeManager = (UiModeManager)mRenderThread.mContext.getSystemService(Context.UI_MODE_SERVICE);
+        boolean isTV = (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
+        overscanPercent = (isTV == true ? 0.1f : 0.0f);
+
         // Resize the internal bitmap to match the size of the surface we have been given
-        mRenderThread.setSurfaceSize(width, height);
+        mRenderThread.setSurfaceSize(width, height, overscanPercent);
 
         // Create thread to run our native code implementation
         if (mNativeThread == null) {
