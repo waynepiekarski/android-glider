@@ -2,15 +2,13 @@ apply plugin: 'com.android.application'
 
 
 android {
-    // NDK r10 does not provide android-20 directory, so you need to symlink it to android-19 for now.
-    // You cannot pick API level 19 here because the wearable library requires 20.
-    compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.0.0"
 
     defaultConfig {
         applicationId "net.waynepiekarski.glider"
         minSdkVersion 20
-        targetSdkVersion 20
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
         ndk {
