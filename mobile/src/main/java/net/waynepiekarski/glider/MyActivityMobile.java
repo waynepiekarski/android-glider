@@ -34,9 +34,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 
@@ -79,8 +82,6 @@ public class MyActivityMobile extends Activity {
         return arrow;
     }
 
-    private GoogleApiClient mGoogleApiClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,20 +102,40 @@ public class MyActivityMobile extends Activity {
 
         setContentView(f);
 
-        // Open up Google API to implement wearable messaging if needed
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .build();
-        mGoogleApiClient.connect();
-
         // Implement a button to launch the wear app
         ImageView wear = new ImageView(this);
         wear.setImageResource(R.drawable.wearable_icon);
         wear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Logging.debug("Launching wearable client via message");
-                Wearable.MessageApi.sendMessage(mGoogleApiClient, "empty", "/start-glider-on-wearable", new byte[0]);
+                // Must run this all on a background thread since it uses blocking calls for compactness
+                Logging.debug("onClick for wearable start button");
+                new Thread( new Runnable() {
+                    @Override
+                    public void run() {
+                        Logging.debug("Connecting to Google Play Services to use MessageApi");
+                        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(MyActivityMobile.this).addApi(Wearable.API).build();
+                        ConnectionResult result = googleApiClient.blockingConnect();
+                        if (result.isSuccess()) {
+                            Logging.debug("Searching for list of wearable clients");
+                            NodeApi.GetConnectedNodesResult nodesResult =
+                                    Wearable.NodeApi.getConnectedNodes(googleApiClient).await();
+                            Logging.debug("Found " + nodesResult.getNodes().size() + " wearables clients to send to");
+                            for (final Node node : nodesResult.getNodes()) {
+                                Logging.debug("Launching wearable client " + node.getId() + " via message");
+                                MessageApi.SendMessageResult sendResult =
+                                        Wearable.MessageApi.sendMessage(googleApiClient, node.getId(), "/start-on-wearable", new byte[0]).await();
+                                if (sendResult.getStatus().isSuccess()) {
+                                    Logging.debug("Successfully sent to client " + node.getId());
+                                } else {
+                                    Logging.debug("Failed to send to client " + node.getId() + " with error " + sendResult);
+                                }
+                            }
+                        } else {
+                            Logging.debug("Failed to connect to Google Play Services: " + result);
+                        }
+                    }
+                }).start();
             }
         });
         f.removeView(bottomRight);

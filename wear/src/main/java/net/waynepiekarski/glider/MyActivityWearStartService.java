@@ -31,8 +31,8 @@ public class MyActivityWearStartService extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        if (messageEvent.getPath().equals("/start-glider-on-wearable")) {
-            Logging.debug("Received message to start Glider game on wearable");
+        if (messageEvent.getPath().equals("/start-on-wearable")) {
+            Logging.debug("Starting activity after receiving message from mobile device");
             Intent startIntent = new Intent(this, MyActivityWear.class);
             startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(startIntent);
