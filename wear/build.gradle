@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 
-
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -15,9 +14,7 @@ android {
             moduleName "native-jni"
             ldLibs "log"
             stl "stlport_static"
-            // Do not try to build for alternative CPU product flavors for Wear, it
-            // is not compatible with the wearApp() gradle rule
-            abiFilter "armeabi-v7a"
+            abiFilters = ['armeabi-v7a','x86']
         }
     }
     buildTypes {

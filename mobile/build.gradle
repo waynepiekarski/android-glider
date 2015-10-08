@@ -14,6 +14,10 @@ android {
             moduleName "native-jni"
             ldLibs "log"
             stl "stlport_static"
+            // armeabi is needed for the Gingerbread ARM emulator
+            // armeabi-v7a is not needed since these devices support armeabi
+            // x86 is needed because the x86 converter requires at least armeabi-v7a
+            abiFilters = ['armeabi','x86']
         }
     }
     buildTypes {
@@ -31,45 +35,6 @@ android {
     }
 
     buildTypes.debug.jniDebuggable true
-
-    productFlavors {
-        x86 {
-            ndk {
-                abiFilter "x86"
-            }
-
-            // this is the flavor part of the version code.
-            // It must be higher than the arm one for devices supporting
-            // both, as x86 is preferred.
-            versionCode = 3
-        }
-        arm {
-            ndk {
-                abiFilter "armeabi-v7a"
-            }
-            versionCode = 2
-        }
-        mips {
-            ndk {
-                abiFilter "mips"
-            }
-            versionCode = 1
-        }
-        fat {
-            // fat binary, lowest version code to be
-            // the last option
-            versionCode = 0
-        }
-    }
-
-    // make per-variant version code
-    applicationVariants.all { variant ->
-        // get the single flavor
-        def flavorVersion = variant.productFlavors.get(0).versionCode
-
-        // set the composite code, use the last digit of my timestamp for the flavor version
-        variant.mergedFlavor.versionCode = (defaultConfig.versionCode / 10) * 10 + flavorVersion
-    }
 }
 
 dependencies {
