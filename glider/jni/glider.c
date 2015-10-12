@@ -472,11 +472,13 @@ void menu (void)
 }
 
 
+#ifndef __ANDROID__
 void signal_handler (int signum)
 {
   ansi_printf ("Signal handler %d ... Exiting...", signum);
   exit (1);
 }
+#endif // __ANDROID__
 
 
 #ifdef __ANDROID__
@@ -487,12 +489,14 @@ int main (void)
 {
   char version_string [80];
 
+#ifndef __ANDROID__
   /* We need to install a handler for SIGSEGV and friends so rowan and his
      friends can't drop a core file! */
 
   signal (SIGSEGV, signal_handler);
   signal (SIGBUS, signal_handler);
   signal (SIGQUIT, signal_handler);
+#endif // __ANDROID__
 
   store_term_default ();
   set_term_raw ();
