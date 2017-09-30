@@ -23,8 +23,12 @@
 #define TRUE 1
 #define FALSE 0
 
+#ifdef __ANDROID__
 int java_getPackageVersion();
 #define GLIDER_PACKAGE java_getPackageVersion()
+#else
+#define GLIDER_PACKAGE 0
+#endif // __ANDROID__
 #define GLIDER_VERSION "1.0h"
 #define GLIDER_DAY 18
 #define GLIDER_MONTH 8
