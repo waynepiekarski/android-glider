@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <jni.h>
+#include <unistd.h>
 #include "ansi.h"
 
 
@@ -53,7 +54,7 @@ void java_submitAnsiBuffer(const char *buffer, size_t len) {
   if (clazz == NULL) FATAL("Failed to lookup GetObjectClass");
   jmethodID methodID = (*jni_env)->GetMethodID( jni_env, clazz, "submitAnsiBuffer", "(I[B)V" );
   if (methodID == NULL) FATAL("Failed to lookup GetMethodID");
-  (*jni_env)->SetByteArrayRegion(jni_env, jni_array, 0, len, buffer);
+  (*jni_env)->SetByteArrayRegion(jni_env, jni_array, 0, len, (const jbyte *)buffer);
   (*jni_env)->CallVoidMethod (jni_env, jni_object, methodID, len, jni_array);
   (*jni_env)->DeleteLocalRef(jni_env, clazz);
 }
