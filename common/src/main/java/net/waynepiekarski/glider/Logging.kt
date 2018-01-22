@@ -20,17 +20,23 @@
 //
 // ---------------------------------------------------------------------
 
-package net.waynepiekarski.glider;
+package net.waynepiekarski.glider
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.util.Log
 
-public class MyActivityTV extends Activity {
+object Logging {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AnsiTerminalView ansi = new AnsiTerminalView (this, null);
-        setContentView(ansi);
+    private val TAG = "Glider"
+
+    fun debug(str: String) {
+        Log.d(TAG, str)
+    }
+
+    fun fatal(str: String) {
+        Log.e(TAG, "FATAL ERROR: " + str)
+        val re = RuntimeException()
+        re.printStackTrace()
+        Log.e(TAG, "Exiting with error code 1")
+        System.exit(1)
     }
 }

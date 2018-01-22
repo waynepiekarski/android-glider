@@ -20,22 +20,21 @@
 //
 // ---------------------------------------------------------------------
 
-package net.waynepiekarski.glider;
+package net.waynepiekarski.glider
 
-import android.content.Intent;
+import android.content.Intent
 
-import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.WearableListenerService;
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.WearableListenerService
 
-public class MyActivityWearStartService extends WearableListenerService {
+class MyActivityWearStartService : WearableListenerService() {
 
-    @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-        if (messageEvent.getPath().equals("/start-on-wearable")) {
-            Logging.debug("Starting activity after receiving message from mobile device");
-            Intent startIntent = new Intent(this, MyActivityWear.class);
-            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startIntent);
+    override fun onMessageReceived(messageEvent: MessageEvent?) {
+        if (messageEvent!!.path == "/start-on-wearable") {
+            Logging.debug("Starting activity after receiving message from mobile device")
+            val startIntent = Intent(this, MyActivityWear::class.java)
+            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(startIntent)
         }
     }
 }

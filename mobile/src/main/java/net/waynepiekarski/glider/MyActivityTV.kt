@@ -20,24 +20,16 @@
 //
 // ---------------------------------------------------------------------
 
-package net.waynepiekarski.glider;
+package net.waynepiekarski.glider
 
-import android.util.Log;
+import android.app.Activity
+import android.os.Bundle
 
-public class Logging {
+class MyActivityTV : Activity() {
 
-    private static final String TAG = "Glider";
-
-    public static void debug (String str) {
-        Log.d (TAG, str);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val ansi = AnsiTerminalView(this, null)
+        setContentView(ansi)
     }
-
-    public static void fatal (String str) {
-        Log.e (TAG, "FATAL ERROR: " + str);
-        RuntimeException re = new RuntimeException();
-        re.printStackTrace();
-        Log.e (TAG, "Exiting with error code 1");
-        System.exit(1);
-    }
-
 }

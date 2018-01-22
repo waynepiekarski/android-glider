@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 24
@@ -47,4 +49,8 @@ dependencies {
     compile 'com.google.android.support:wearable:2.1.0'
     provided 'com.google.android.wearable:wearable:2.1.0'
     compile 'com.google.android.gms:play-services-wearable:10.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
