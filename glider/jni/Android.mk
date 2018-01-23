@@ -1,6 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
+LOCAL_CFLAGS := -DGLIDER_TARGET_ARCH_ABI="$(TARGET_ARCH_ABI)"
 LOCAL_MODULE := native-jni
 LOCAL_LDFLAGS := -Wl,--build-id
 LOCAL_LDLIBS := -llog

@@ -14,10 +14,8 @@ android {
         versionName "1.0"
 
         ndk {
-            // armeabi is needed for the Gingerbread ARM emulator
-            // armeabi-v7a is not needed since these devices support armeabi
-            // x86 is needed because the x86 converter requires at least armeabi-v7a
-            abiFilters 'armeabi','x86'
+            // Android Wear devices are either armeabi-v7a or x86
+            abiFilters 'armeabi-v7a','x86'
         }
     }
 

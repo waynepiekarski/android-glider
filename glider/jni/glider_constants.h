@@ -26,8 +26,9 @@
 #ifdef __ANDROID__
 int java_getPackageVersion();
 #define GLIDER_PACKAGE java_getPackageVersion()
-#else
-#define GLIDER_PACKAGE 0
+#define __STRINGIFY(s) __STRINGIFY2(s)
+#define __STRINGIFY2(s) #s
+#define GLIDER_ARCH __STRINGIFY(GLIDER_TARGET_ARCH_ABI)
 #endif // __ANDROID__
 #define GLIDER_VERSION "1.0h"
 #define GLIDER_DAY 18

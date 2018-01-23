@@ -30,8 +30,15 @@ void draw_frame (void)
   
   ansi_SetAttr (ATTR_reverse);
   ansi_Position (1, 1);
-  ansi_printf ("    Glider/Android Version %.10d - Coded by Wayne Piekarski - %2d/%d/%2d   \n", GLIDER_PACKAGE, GLIDER_DAY, GLIDER_MONTH, GLIDER_YEAR);
-  
+  for (cx = 1; cx <= MAX_SCR_COLS; cx++)
+    ansi_putchar (CHAR_space);
+  ansi_Position (1, 1);
+#ifdef __ANDROID__
+  ansi_printf (" Glider/Android %s %.10d - Coded by Wayne Piekarski - %2d/%d/%2d\n", GLIDER_ARCH, GLIDER_PACKAGE, GLIDER_DAY, GLIDER_MONTH, GLIDER_YEAR);
+#else
+  ansi_printf (" Glider Version %4s - Coded by Wayne Piekarski - %2d/%d/%2d\n", GLIDER_VERSION, GLIDER_DAY, GLIDER_MONTH, GLIDER_YEAR);
+#endif // __ANDROID__
+
   for (cy = 1; cy <= MAX_SCR_ROWS; cy++)
     {
       ansi_Position (1, cy);
