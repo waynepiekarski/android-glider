@@ -2,7 +2,7 @@
 //
 // Glider
 //
-// Copyright (C) 1996-2014 Wayne Piekarski
+// Copyright (C) 1996-2018 Wayne Piekarski
 // wayne@tinmith.net http://tinmith.net/wayne
 //
 // This program is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ char *_intro_pixmap [] = {
 @   \\/____\\ \\/____/ \\/_/\\/__,__/\\/____/ \\/_/      \\/__/      \\/_/\\/_/ \\/___/   @\
 @     /\\____/                                                                  @\
 @     \\/___/                                                                   @\
-@                          Copyright (C) 1996-2014                             @\
+@                          Copyright (C) 1996-2018                             @\
 @                                                                              @\
 @               Coded by Wayne Piekarski http://tinmith.net/wayne              @\
 @                                                                              @\
@@ -119,7 +119,7 @@ char *_intro_pixmap [] = {
 @   \\/____\\ \\/____/ \\/_/\\/__,__/\\/____/ \\/_/      \\/__/      \\/_/\\/_/ \\/___/   @\
 @     /\\____/                                                                  @\
 @     \\/___/                                                                   @\
-@                          Copyright (C) 1996-2014                             @\
+@                          Copyright (C) 1996-2018                             @\
 @                                                                              @\
 @               Coded by Wayne Piekarski http://tinmith.net/wayne              @\
 @                                                                              @\

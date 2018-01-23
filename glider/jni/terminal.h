@@ -2,7 +2,7 @@
 //
 // Glider
 //
-// Copyright (C) 1996-2014 Wayne Piekarski
+// Copyright (C) 1996-2018 Wayne Piekarski
 // wayne@tinmith.net http://tinmith.net/wayne
 //
 // This program is free software: you can redistribute it and/or modify
