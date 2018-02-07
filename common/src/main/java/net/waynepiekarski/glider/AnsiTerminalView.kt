@@ -583,9 +583,9 @@ class AnsiTerminalView(context: Context, attrs: AttributeSet?) : SurfaceView(con
             KeyEvent.KEYCODE_DPAD_RIGHT -> result = '6'.toByte()
             KeyEvent.KEYCODE_DPAD_UP -> result = '8'.toByte()
             KeyEvent.KEYCODE_DPAD_DOWN -> result = '2'.toByte()
-            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_BUTTON_B, KeyEvent.KEYCODE_BUTTON_C -> result = '\n'.toByte()
+            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_BUTTON_B, KeyEvent.KEYCODE_BUTTON_C, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_SPACE -> result = '\n'.toByte()
             KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_HOME -> System.exit(0) // Exit out of the game
-        }// Enter key for buttons
+        }
         if (result.toInt() == 0) {
             Logging.debug("Ignoring onKeyDown event for unknown keyCode " + keyCode)
         } else {

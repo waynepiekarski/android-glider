@@ -50,6 +50,8 @@ class MyActivityMobile : Activity() {
         layout.addView(arrow, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, gravity))
         arrow.setImageBitmap(generateArrow(angle.toFloat()))
         arrow.setOnClickListener { ansi.injectKeyboardEvent(key) }
+        arrow.setFocusable(false)
+        arrow.setFocusableInTouchMode(false)
         return arrow
     }
 
@@ -59,6 +61,10 @@ class MyActivityMobile : Activity() {
         val f = FrameLayout(this)
 
         val ansi = AnsiTerminalView(this, null)
+        // Android tablets with keyboards need to have focus prevented on all views otherwise it will try
+        // to put a highlight on one of them. So grab focus here and prevent it everywhere else. I could
+        // not get rid of the focus outline that occurs if you touch the screen beforehand.
+        ansi.requestFocus()
         f.addView(ansi)
 
         // Create arrow overlays to show the user how to control the UI
@@ -73,6 +79,8 @@ class MyActivityMobile : Activity() {
 
         // Implement a button to launch the wear app
         val wear = ImageView(this)
+        wear.setFocusable(false)
+        wear.setFocusableInTouchMode(false)
         wear.setImageResource(R.drawable.wearable_icon)
         wear.setOnClickListener {
             // Must run this all on a background thread since it uses blocking calls for compactness
