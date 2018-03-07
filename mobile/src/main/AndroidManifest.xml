@@ -10,9 +10,13 @@
     <!-- Do not require a touchscreen, so this works on Android TV -->
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
+    <!-- Recommended for TV https://developer.android.com/training/tv/start/start.html#leanback-req -->
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher_papercraft"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:isGame="true"
         android:theme="@style/AppTheme" >
