@@ -27,7 +27,7 @@
 
 extern char *pilot;
 extern char *helicopter;
-extern struct _level_data level_data [MAX_ROOMS];
+struct _level_data level_data [MAX_ROOMS];
 
 void game_win (void)
 {

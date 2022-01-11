@@ -22,7 +22,7 @@
 
 #include "glider_constants.h"
 
-struct _level_data
+extern struct _level_data
 {
   int *vents;
   char *map;
