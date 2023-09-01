@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "net.waynepiekarski.glider"
         minSdkVersion 22
-        targetSdkVersion 34
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
