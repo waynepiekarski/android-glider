@@ -35,13 +35,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.wearable.MessageApi
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.NodeApi
-import com.google.android.gms.wearable.Wearable
-
 
 class MyActivityMobile : Activity() {
 
@@ -77,41 +70,10 @@ class MyActivityMobile : Activity() {
 
         setContentView(f)
 
-        // Implement a button to launch the wear app
-        val wear = ImageView(this)
-        wear.setFocusable(false)
-        wear.setFocusableInTouchMode(false)
-        wear.setImageResource(R.drawable.wearable_icon)
-        wear.setOnClickListener {
-            // Must run this all on a background thread since it uses blocking calls for compactness
-            Logging.debug("onClick for wearable start button")
-            Thread(Runnable {
-                Logging.debug("Connecting to Google Play Services to use MessageApi")
-                val googleApiClient = GoogleApiClient.Builder(this@MyActivityMobile).addApi(Wearable.API).build()
-                val result = googleApiClient.blockingConnect()
-                if (result.isSuccess) {
-                    Logging.debug("Searching for list of wearable clients")
-                    val nodesResult = Wearable.NodeApi.getConnectedNodes(googleApiClient).await()
-                    Logging.debug("Found " + nodesResult.nodes.size + " wearables clients to send to")
-                    for (node in nodesResult.nodes) {
-                        Logging.debug("Launching wearable client " + node.id + " via message")
-                        val sendResult = Wearable.MessageApi.sendMessage(googleApiClient, node.id, "/start-on-wearable", ByteArray(0)).await()
-                        if (sendResult.status.isSuccess) {
-                            Logging.debug("Successfully sent to client " + node.id)
-                        } else {
-                            Logging.debug("Failed to send to client " + node.id + " with error " + sendResult)
-                        }
-                    }
-                } else {
-                    Logging.debug("Failed to connect to Google Play Services: " + result)
-                }
-            }).start()
-        }
         f.removeView(bottomRight)
         val linear = LinearLayout(this)
         f.addView(linear, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.RIGHT or Gravity.BOTTOM))
         linear.orientation = LinearLayout.VERTICAL
-        linear.addView(wear)
         linear.addView(bottomRight)
     }
 
