@@ -8,13 +8,12 @@ android {
     defaultConfig {
         applicationId "net.waynepiekarski.glider"
         minSdkVersion 22
-        targetSdkVersion 28
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
 
         ndk {
-            // Android Wear devices are either armeabi-v7a or x86
-            abiFilters 'armeabi-v7a','x86'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
     }
 
@@ -45,7 +44,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.android.support:wearable:2.1.0'
     compileOnly 'com.google.android.wearable:wearable:2.1.0'
-    implementation 'com.google.android.gms:play-services-wearable:10.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
